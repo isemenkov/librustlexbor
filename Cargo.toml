@@ -1,5 +1,5 @@
 [package]
-name = "librustlexbot"
+name = "librustlexbor"
 version = "0.1.0"
 authors = ["Ivan Semenkov <ivan@semenkov.pro>"]
 edition = "2018"
@@ -10,4 +10,4 @@ readme = "README.md"
 categories = ["api-bindings", "external-ffi-bindings"]
 
 [dependencies]
-libconfig-sys = { path = "./librustlexbor-sys", version = "0.1" }
+librustlexbor-sys = { path = "./librustlexbor-sys", version = "0.1" }
