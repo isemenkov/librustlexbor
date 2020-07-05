@@ -1,0 +1,13 @@
+[package]
+name = "librustlexbor-sys"
+version = "0.1.0"
+authors = ["Ivan Semenkov <ivan@semenkov.pro>"]
+edition = "2018"
+license = "MIT"
+description = "libRustLexbor is an open source HTML Renderer library."
+repository = "https://github.com/isemenkov/librustlexbor"
+readme = "README.md"
+categories = ["ffi", "bindings"]
+
+[dependencies]
+libc = "0.2"
