@@ -37,13 +37,28 @@ use std::os::raw::c_void;
 
 #[repr(C)]
 pub struct lexbor_array_t {
-    pub list : *mut *mut c_void;
-    pub size : c_uint;
-    pub length : c_uint;
+    pub list : *mut *mut c_void,
+    pub size : c_uint,
+    pub length : c_uint
+}
+
+#[repr(C)]
+pub struct lexbor_array_obj_t {
+    list : *mut u8,
+    size : c_uint,
+    length : c_uint,
+    struct_size : c_uint
 }
 
 #[link(name = "lexbor")]
 extern "C" {
+    // lexbor/core/lexbor.h
+    pub fn lexbor_malloc (size : c_uint) -> *mut c_void;
+    pub fn lexbor_realloc (dst : *mut c_void, size : c_uint) -> *mut c_void;
+    pub fn lexbor_calloc (num : c_uint, size : c_uint) -> *mut c_void;
+    pub fn lexbor_free (dst : *mut c_void) -> *mut c_void;
+
+    // lexbor/core/array.h
     pub fn lexbor_array_create() -> lexbor_array_t;
     pub fn lexbor_array_init(array : *mut lexbor_array_t, size : c_uint) ->
         lxb_status_t;
@@ -65,5 +80,7 @@ extern "C" {
         -> *mut c_void;
     pub fn lexbor_array_length_noi(array : *mut lexbor_array_t) -> c_uint;
     pub fn lexbor_array_size_noi(array : *mut lexbor_array_t) -> c_uint;
-
+    
+    // lexbor/core/array_obj.h
+    pub fn lexbor_array_obj_create -> *mut lexbor_array_obj_t;
 }
