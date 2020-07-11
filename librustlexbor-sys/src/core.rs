@@ -35,9 +35,12 @@ extern crate libc;
 use libc::{c_uchar, c_short, c_uint };
 use std::os::raw::c_void;
 
-pub type lxb_codepoint_t = c_uint;
+pub type lxb_codepoint_t = u32;
 pub type lxb_char_t = c_uchar;
 pub type lxb_status_t = c_uint;
+
+pub type lexbor_callback_f = extern "C" fn(buffer : *const lxb_char_t, size :
+    c_uint, ctx : *mut c_void);
 
 #[repr(C)]
 pub enum lexbor_status_t {
@@ -130,6 +133,41 @@ pub struct lexbor_avl_t {
 
 pub type lexbor_avl_node_f = extern "C" fn(avl_node : *mut lexbor_avl_node_t,
     ctx : *mut c_void) -> ();
+
+#[repr(C)]
+pub struct lexbor_bst_entry_t {
+    pub value : *mut c_void,
+
+    pub rigth : *mut lexbor_bst_entry_t,
+    pub left : *mut lexbor_bst_entry_t,
+    pub next : *mut lexbor_bst_entry_t,
+    pub parent : *mut lexbor_bst_entry_t,
+
+    pub size : c_uint
+}
+
+#[repr(C)]
+pub struct lexbor_bst_t {
+    pub dobject : *mut lexbor_dobject_t,
+    pub root : *mut lexbor_bst_entry_t,
+
+    pub tree_length : c_uint
+}
+
+pub type lexbor_bst_entry_f = extern "C" fn(bst : *mut lexbor_bst_t, entry :
+    *mut lexbor_bst_entry_t, ctx : *mut c_void) -> bool;
+
+#[repr(C)]
+pub struct lexbor_mraw_t {
+    pub mem : *mut lexbor_mem_t,
+    pub cache : *mut lexbor_bst_t
+}
+
+#[repr(C)]
+pub struct lexbor_str_t {
+    pub data : *mut lxb_char_t,
+    pub length : c_uint
+}
 
 #[link(name = "lexbor")]
 extern "C" {
@@ -252,4 +290,111 @@ extern "C" {
     pub fn lexbor_avl_foreach_recursion(avl : *mut lexbor_avl_t, scope :
         *mut lexbor_avl_node_t, callback : lexbor_avl_node_f, ctx : 
         *mut c_void) -> ();
+
+    // lexbor/core/bst.h
+    pub fn lexbor_bst_create() -> *mut lexbor_bst_t;
+    pub fn lexbor_bst_init(bst : *mut lexbor_bst_t, size : c_uint) -> 
+        lxb_status_t;
+    pub fn lexbor_bst_clean(bst : *mut lexbor_bst_t) -> ();
+    pub fn lexbor_bst_destroy(bst : *mut lexbor_bst_t, self_destroy : bool) ->
+        *mut lexbor_bst_t;
+    pub fn lexbor_bst_entry_make(bst : *mut lexbor_bst_t, size : c_uint) ->
+        *mut lexbor_bst_entry_t;
+    pub fn lexbor_bst_insert(bst : *mut lexbor_bst_t, scope : 
+        *mut *mut lexbor_bst_entry_t, size : c_uint, value : *mut c_void) ->
+        *mut lexbor_bst_entry_t;
+    pub fn lexbor_bst_insert_not_exists(bst : *mut lexbor_bst_t, scope :
+        *mut *mut lexbor_bst_entry_t, size : c_uint) -> *mut lexbor_bst_entry_t;
+    pub fn lexbor_bst_search(bst : *mut lexbor_bst_t, scope : 
+        *mut lexbor_bst_entry_t, size : c_uint) -> *mut lexbor_bst_entry_t;
+    pub fn lexbor_bst_search_close(bst : *mut lexbor_bst_t, scope :
+        *mut lexbor_bst_entry_t, size : c_uint) -> *mut lexbor_bst_entry_t;
+    pub fn lexbor_bst_remove(bst : *mut lexbor_bst_t, root : 
+        *mut *mut lexbor_bst_entry_t, size : c_uint) -> *mut c_void;
+    pub fn lexbor_bst_remove_close(bst : *mut lexbor_bst_t, root :
+        *mut *mut lexbor_bst_entry_t, size : c_uint, found_size : *mut c_uint) 
+        -> *mut c_void;
+    pub fn lexbor_bst_remove_by_pointer(bst : *mut lexbor_bst_t, entry :
+        *mut lexbor_bst_entry_t, root : *mut *mut lexbor_bst_entry_t) ->
+        *mut c_void;
+    pub fn lexbor_bst_serilize(bst : *mut lexbor_bst_t, callbalck :
+        lexbor_callback_f, ctx : *mut c_void) -> ();
+    pub fn lexbor_bst_serialize_entry(entry : *mut lexbor_bst_entry_t, 
+        callback : lexbor_callback_f, ctx : *mut c_void, tabs : c_uint) -> ();
+
+    // lexbor/core/mraw.h
+    pub fn lexbor_mraw_create() -> *mut lexbor_mraw_t;
+    pub fn lexbor_mraw_init(mraw : *mut lexbor_mraw_t, chunk_size : c_uint) ->
+        lxb_status_t;
+    pub fn lexbor_mraw_clean(mraw : *mut lexbor_mraw_t) -> ();
+    pub fn lexbor_mraw_destroy(mraw : *mut lexbor_mraw_t, destroy_self : bool)
+        -> *mut lexbor_mraw_t;
+    pub fn lexbor_mraw_alloc(mraw : *mut lexbor_mraw_t, size : c_uint) ->
+        *mut c_void;
+    pub fn lexbor_mraw_calloc(mraw : *mut lexbor_mraw_t, size : c_uint) ->
+        *mut c_void;
+    pub fn lexbor_mraw_realloc(mraw : *mut lexbor_mraw_t, data : *mut c_void,
+        new_size : c_uint) -> *mut c_void;
+    pub fn lexbor_mraw_free(mraw : *mut lexbor_mraw_t, data : *mut c_void) ->
+        *mut c_void;
+    pub fn lexbor_mraw_data_size_noi(data : *mut c_void) -> c_uint;
+    pub fn lexbor_mraw_data_size_set_noi(data : *mut c_void, size : c_uint) 
+        -> ();
+    pub fn lexbor_mraw_dup_noi(mraw : *mut lexbor_mraw_t, src : *const c_void,
+        size : c_uint) -> *mut c_void;
+
+    // lexbor/core/utils.h
+    pub fn lexbor_utils_power(t : c_uint, k : c_uint) -> c_uint;
+    pub fn lexbor_utils_hash_hash(key : *const lxb_char_t, key_size : c_uint) 
+        -> c_uint;
+    
+    // lexbor/core/str.h
+    pub fn lexbor_str_create() -> *mut lexbor_str_t;
+    pub fn lexbor_str_init(string : *mut lexbor_str_t, mraw : 
+        *mut lexbor_mraw_t, size : c_uint) -> *mut lxb_char_t;
+    pub fn lexbor_str_clean(string : *mut lexbor_str_t) -> ();
+    pub fn lexbor_str_clean_all(string : *mut lexbor_str_t) -> ();
+    pub fn lexbor_str_destroy(string : *mut lexbor_str_t, mraw : 
+        *mut lexbor_mraw_t, destroy_obj : bool) -> *mut lexbor_str_t;
+    pub fn lexbor_str_realloc(string : *mut lexbor_str_t, mraw : 
+        *mut lexbor_mraw_t, new_size : *mut c_uint) -> lxb_char_t;
+    pub fn lexbor_str_check_size(string : *mut lexbor_str_t, mraw :
+        *mut lexbor_mraw_t, plus_len : c_uint) -> *mut lxb_char_t;
+    pub fn lexbor_str_append(string : *mut lexbor_str_t, mraw : 
+        *mut lexbor_mraw_t, data : *const lxb_char_t, length : c_uint) ->
+        *mut lxb_char_t;
+    pub fn lexbor_str_append_before(string : *mut lexbor_str_t, mraw : 
+        *mut lexbor_mraw_t, buff : *const lxb_char_t, length : c_uint) ->
+        *mut lxb_char_t;
+    pub fn lexbor_str_append_one(string : *mut lexbor_str_t, mraw : 
+        *mut lexbor_mraw_t, data : *const lxb_char_t) -> *mut lxb_char_t;
+    pub fn lexbor_str_append_lowercase(string : lexbor_str_t, mraw :
+        *mut lexbor_mraw_t, data : *const lxb_char_t, length : c_uint) ->
+        *mut lxb_char_t;
+    pub fn lexbor_str_append_with_rep_null_chars(string : *mut lexbor_str_t,
+        mraw : *mut lexbor_mraw_t, buff : *const lxb_char_t, length : c_uint)
+        -> *mut lxb_char_t;
+    pub fn lexbor_str_copy(dest : *mut lexbor_str_t, target : 
+        *const lexbor_mraw_t, buff : *const lxb_char_t, length : c_uint) ->
+        *mut lxb_char_t;
+    pub fn lexbor_str_stay_only_whitespace(target : *mut lexbor_str_t) -> ();
+    pub fn lexbor_str_strip_collapse_whitespace(target : *mut lexbor_str_t) 
+        -> ();
+    pub fn lexbor_str_crop_whitespace_from_begin(target : *mut lexbor_str_t) ->
+        c_uint;
+    pub fn lexbor_str_whitespace_from_begin(target : *mut lexbor_str_t) ->
+        c_uint;
+    pub fn lexbor_str_whitespace_from_end(target : *mut lexbor_str_t) -> c_uint;
+    pub fn lexbor_str_data_ncasecmp_first(first : *const lxb_char_t, sec :
+        *const lxb_char_t, sec_size : c_uint) -> *const lxb_char_t;
+    pub fn lexbor_str_data_ncasecmp_end(first : *const lxb_char_t, sec :
+        *const lxb_char_t, size : c_uint) -> bool;
+    pub fn lexbor_str_data_ncasecmp_contain(_where : *const lxb_char_t, 
+        where_size : c_uint, _what : *const lxb_char_t, what_size : c_uint) ->
+        bool;
+    pub fn lexbor_str_data_ncasecmp(first : *const lxb_char_t, sec : 
+        *const lxb_char_t, size : c_uint) -> bool;
+    pub fn lexbor_str_data_nlocmp_right(first : *const lxb_char_t, sec : 
+        *const lxb_char_t, size : c_uint) -> bool;
+    
 }
