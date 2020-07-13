@@ -396,5 +396,27 @@ extern "C" {
         *const lxb_char_t, size : c_uint) -> bool;
     pub fn lexbor_str_data_nlocmp_right(first : *const lxb_char_t, sec : 
         *const lxb_char_t, size : c_uint) -> bool;
-    
+    pub fn lexbor_str_data_nupcmp_right(first : *const lxb_char_t, sec : 
+        *const lxb_char_t, size : c_uint) -> bool;
+    pub fn lexbor_str_data_casecmp(first : *const lxb_char_t, sec : 
+        *const lxb_char_t) -> bool;
+    pub fn lexbor_str_data_ncmp_end(first : *const lxb_char_t, sec : 
+        *const lxb_char_t, size : c_uint) -> bool;
+    pub fn lexbor_str_data_ncmp_contain(_where : *const lxb_char_t, 
+        _where_size : c_uint, _what : *const lxb_char_t, _what_size : c_uint) 
+        -> bool;
+    pub fn lexbor_str_data_ncmp(first : *const lxb_char_t, sec : 
+        *const lxb_char_t, size : c_uint) -> bool;
+    pub fn lexbor_str_data_cmp(first : *const lxb_char_t, sec :
+        *const lxb_char_t) -> bool;
+    pub fn lexbor_str_data_cmp_ws(first : *const lxb_char_t, sec : 
+        *const lxb_char_t) -> bool;
+    pub fn lexbor_str_data_to_lowercase(to : *mut lxb_char_t, from : 
+        *const lxb_char_t, len : c_uint) -> ();
+    pub fn lexbor_str_data_to_uppercase(to : *mut lxb_char_t, from :
+        *const lxb_char_t, len : c_uint) -> ();
+    pub fn lexbor_str_data_find_lowercase(data : *const lxb_char_t, len : 
+        c_uint) -> *const lxb_char_t;
+    pub fn lexbor_str_data_find_uppercase(data : *const lxb_char_t, len : 
+        c_uint) -> *const lxb_char_t;
 }
