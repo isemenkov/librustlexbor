@@ -419,4 +419,11 @@ extern "C" {
         c_uint) -> *const lxb_char_t;
     pub fn lexbor_str_data_find_uppercase(data : *const lxb_char_t, len : 
         c_uint) -> *const lxb_char_t;
+    pub fn lexbor_str_data_noi(_str : *mut lexbor_str_t) -> *mut lxb_char_t;
+    pub fn lexbor_str_length_noi(_str : *mut lexbor_str_t) -> c_uint;
+    pub fn lexbor_str_size_noi(_str : *mut lexbor_str_t) -> c_uint;
+    pub fn lexbor_str_data_set_noi(_str : *mut lexbor_str_t, data :
+        *mut lxb_char_t) -> ();
+    pub fn lexbor_str_length_set_noi(_str : *mut lexbor_str_t, mraw :
+        *mut lexbor_mraw_t, length : c_uint) -> *mut lxb_char_t;
 }
