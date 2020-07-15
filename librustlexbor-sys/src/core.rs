@@ -445,5 +445,10 @@ extern "C" {
     pub fn lexbor_bst_map_init(bst_map : *mut lexbor_bst_map_t, size : 
         c_uint) -> lxb_status_t;
     pub fn lexbor_bst_map_clean(bst_map : *mut lexbor_bst_map_t) -> ();
+    pub fn lexbor_bst_map_destroy(bst_map : *mut lexbor_bst_map_t, 
+        self_destroy : bool) -> *mut lexbor_bst_map_t;
+    pub fn lexbor_bst_map_search(bst_map : *mut lexbor_bst_map_t, scope :
+        *mut lexbor_bst_entry_t, key : *const lxb_char_t, key_len : c_uint) 
+        -> *mut lexbor_bst_map_entry_t; 
 
 }
