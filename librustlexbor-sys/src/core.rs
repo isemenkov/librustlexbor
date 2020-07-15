@@ -169,6 +169,19 @@ pub struct lexbor_str_t {
     pub length : c_uint
 }
 
+#[repr(C)]
+pub struct lexbor_bst_map_entry_t {
+    pub _str : lexbor_str_t,
+    pub value : *mut c_void
+}
+
+#[repr(C)]
+pub struct lexbor_bst_map_t {
+    pub bst : *mut lexbor_bst_t,
+    pub mraw : *mut lexbor_mraw_t,
+    pub entries : lexbor_dobject_t
+}
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/core/lexbor.h
@@ -426,4 +439,11 @@ extern "C" {
         *mut lxb_char_t) -> ();
     pub fn lexbor_str_length_set_noi(_str : *mut lexbor_str_t, mraw :
         *mut lexbor_mraw_t, length : c_uint) -> *mut lxb_char_t;
+
+    // lexbor/core/bst_map.h
+    pub fn lexbor_bst_map_create() -> *mut lexbor_bst_map_t;
+    pub fn lexbor_bst_map_init(bst_map : *mut lexbor_bst_map_t, size : 
+        c_uint) -> lxb_status_t;
+    pub fn lexbor_bst_map_clean(bst_map : *mut lexbor_bst_map_t) -> ();
+
 }
