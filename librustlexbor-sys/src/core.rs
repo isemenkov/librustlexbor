@@ -449,6 +449,17 @@ extern "C" {
         self_destroy : bool) -> *mut lexbor_bst_map_t;
     pub fn lexbor_bst_map_search(bst_map : *mut lexbor_bst_map_t, scope :
         *mut lexbor_bst_entry_t, key : *const lxb_char_t, key_len : c_uint) 
-        -> *mut lexbor_bst_map_entry_t; 
+        -> *mut lexbor_bst_map_entry_t;
+    pub fn lexbor_bst_map_insert(bsp_map : *mut lexbor_bst_map_t, scope :
+        *mut *mut lexbor_bst_entry_t, key : *const lxb_char_t, key_len : 
+        c_uint, value : *mut c_void) -> lexbor_bst_map_entry_t;
+    pub fn lexbor_bst_map_insert_not_exists(bsp_map : *mut lexbor_bst_map_t, 
+        scope : *mut *mut lexbor_bst_entry_t, key : *const lxb_char_t, key_len : 
+        c_uint) -> lexbor_bst_map_entry_t;
+    pub fn lexbor_bst_map_remove(bsp_map : *mut lexbor_bst_map_t, 
+        scope : *mut *mut lexbor_bst_entry_t, key : *const lxb_char_t, key_len : 
+        c_uint) -> *mut c_void;
+    pub fn lexbor_bst_map_mraw_noi(bst_map : *mut lexbor_bst_map_t)
+        -> *mut lexbor_mraw_t;
 
 }
