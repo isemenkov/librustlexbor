@@ -32,7 +32,7 @@
 
 extern crate libc;
 
-use libc::{c_uchar, c_short, c_uint };
+use libc::{c_uchar, c_short, c_uint, c_ulong, c_double };
 use std::os::raw::c_void;
 
 pub type lxb_codepoint_t = u32;
@@ -462,4 +462,13 @@ extern "C" {
     pub fn lexbor_bst_map_mraw_noi(bst_map : *mut lexbor_bst_map_t)
         -> *mut lexbor_mraw_t;
 
+    // lexbor/core/conv.h
+    pub fn lexbor_conv_float_to_data(num : c_double, buf : *mut lxb_char_t,
+        len : c_uint) -> c_uint;
+    pub fn lexbor_conv_data_to_double(start : *const *const lxb_char_t, len :
+        c_uint) -> c_double;
+    pub fn lexbor_conv_data_to_ulong(data : *const *const lxb_char_t, length :
+        c_uint) -> c_ulong;
+    pub fn lexbor_conv_data_to_uint(data : *const *const lxb_char_t, length :
+        c_uint) -> c_uint;
 }
