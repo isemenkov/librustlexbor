@@ -32,7 +32,7 @@
 
 extern crate libc;
 
-use libc::{c_uchar, c_short, c_uint, c_ulong, c_double };
+use libc::{c_uchar, c_short, c_int, c_uint, c_ulong, c_double };
 use std::os::raw::c_void;
 
 pub type lxb_codepoint_t = u32;
@@ -180,6 +180,12 @@ pub struct lexbor_bst_map_t {
     pub bst : *mut lexbor_bst_t,
     pub mraw : *mut lexbor_mraw_t,
     pub entries : lexbor_dobject_t
+}
+
+#[repr(C)]
+pub struct lexbor_diyfp_t {
+    pub significand : u64,
+    pub exp : c_int
 }
 
 #[link(name = "lexbor")]
@@ -471,4 +477,14 @@ extern "C" {
         c_uint) -> c_ulong;
     pub fn lexbor_conv_data_to_uint(data : *const *const lxb_char_t, length :
         c_uint) -> c_uint;
+
+    // lexbor/core/diyfp.h
+    pub fn lexbor_cached_power_dec(exp : c_int, dec_exp : *mut c_int) 
+        -> lexbor_diyfp_t;
+    pub fn lexbor_cached_power_bin(exp : c_int, dec_exp : *mut c_int)
+        -> lexbor_diyfp_t;
+    
+    // lexbor/core/dtoa.h
+    pub fn lexbor_dtoa(value : c_double, begin : *mut lxb_char_t, len : c_uint)
+        -> c_uint;
 }
