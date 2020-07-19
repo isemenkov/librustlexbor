@@ -188,6 +188,32 @@ pub struct lexbor_diyfp_t {
     pub exp : c_int
 }
 
+pub type lexbor_fs_dir_file_f = extern "C" fn(fullpath : *const lxb_char_t,
+    fullpath_len : c_uint, filename : *const lxb_char_t, filename_len : c_uint,
+    ctx : *mut c_void) -> lexbor_action_t;
+
+pub type lexbor_fs_dir_opt_t = c_int;
+
+#[repr(C)]
+pub enum lexbor_fs_dir_opt {
+    LEXBOR_FS_DIR_OPT_UNDEF                                            = 0x00,  
+    LEXBOR_FS_DIR_OPT_WITHOUT_DIR                                      = 0x01,
+    LEXBOR_FS_DIR_OPT_WITHOUT_FILE                                     = 0x02,
+    LEXBOR_FS_DIR_OPT_WITHOUT_HIDDEN                                   = 0x04 
+}
+
+#[repr(C)]
+pub enum lexbor_fs_file_type_t {
+    LEXBOR_FS_FILE_TYPE_UNDEF                                          = 0x00,
+    LEXBOR_FS_FILE_TYPE_FILE                                           = 0x01,
+    LEXBOR_FS_FILE_TYPE_DIRECTORY                                      = 0x02,
+    LEXBOR_FS_FILE_TYPE_BLOCK_DEVICE                                   = 0x03,
+    LEXBOR_FS_FILE_TYPE_CHARACTER_DEVICE                               = 0x04,
+    LEXBOR_FS_FILE_TYPE_PIPE                                           = 0x05,
+    LEXBOR_FS_FILE_TYPE_SYMLINK                                        = 0x06,
+    LEXBOR_FS_FILE_TYPE_SOCKET                                         = 0x07  
+}
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/core/lexbor.h
@@ -487,4 +513,13 @@ extern "C" {
     // lexbor/core/dtoa.h
     pub fn lexbor_dtoa(value : c_double, begin : *mut lxb_char_t, len : c_uint)
         -> c_uint;
+
+    // lexbor/core/fs.h
+    pub fn lexbor_fs_dir_read(dirpath : *const lxb_char_t, opt : 
+        lexbor_fs_dir_opt_t, callback : lexbor_fs_dir_file_f, ctx : *mut c_void)
+        -> lxb_status_t;
+    pub fn lexbor_fs_file_type(full_path : *const lxb_char_t)
+        -> lexbor_fs_file_type_t;
+    pub fn lexbor_fs_file_easy_read(full_path : *const lxb_char_t, len :
+        *mut c_uint) -> *mut lxb_char_t;
 }
