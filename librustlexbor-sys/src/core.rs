@@ -214,6 +214,42 @@ pub enum lexbor_fs_file_type_t {
     LEXBOR_FS_FILE_TYPE_SOCKET                                         = 0x07  
 }
 
+pub const LEXBOR_HASH_SHORT_SIZE : usize                               = 16;
+pub const LEXBOR_HASH_TABLE_MIN_SIZE : usize                           = 32; 
+
+#[repr(C)]
+pub union U {
+    pub long_str : *mut lxb_char_t,
+    pub short_str : [lxb_char_t; LEXBOR_HASH_SHORT_SIZE + 1]
+}
+
+#[repr(C)]
+pub struct lexbor_hash_entry_t {
+    pub u : U,
+    pub length : c_uint, 
+    pub next : *mut lexbor_hash_entry_t
+}
+
+#[repr(C)]
+pub struct lexbor_hash_t {
+    pub entries : *mut lexbor_dobject_t,
+    pub mraw : *mut lexbor_mraw_t,
+
+    pub table : *mut *mut lexbor_hash_entry_t,
+    pub table_size : c_uint,
+    pub struct_size : c_uint
+}
+
+pub type lexbor_hash_id_f = extern "C" fn(key : *const lxb_char_t, size : 
+    c_uint) -> u32;
+
+pub type lexbor_hash_copy_f = extern "C" fn(hash : *mut lexbor_hash_t, entry : 
+    *mut lexbor_hash_entry_t, key : *const lxb_char_t, size : c_uint) 
+    -> lxb_status_t;
+    
+pub type lexbor_hash_cmp_f = extern "C" fn(first : *const lxb_char_t, second :
+    *mut lxb_char_t, size : c_uint) -> bool;
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/core/lexbor.h
@@ -522,4 +558,7 @@ extern "C" {
         -> lexbor_fs_file_type_t;
     pub fn lexbor_fs_file_easy_read(full_path : *const lxb_char_t, len :
         *mut c_uint) -> *mut lxb_char_t;
+
+    // lexbor/core/hash.h
+    //pub fn     
 }
