@@ -250,6 +250,17 @@ pub type lexbor_hash_copy_f = extern "C" fn(hash : *mut lexbor_hash_t, entry :
 pub type lexbor_hash_cmp_f = extern "C" fn(first : *const lxb_char_t, second :
     *mut lxb_char_t, size : c_uint) -> bool;
 
+pub struct lexbor_hash_insert_t {
+    pub hash : lexbor_hash_id_f,    /* For generate a hash id. */
+    pub cmp : lexbor_hash_cmp_f,    /* For compare key. */
+    pub copy : lexbor_hash_copy_f   /* For copy key. */
+}
+
+pub struct lexbor_hash_search_t {
+    pub hash : lexbor_hash_id_f,    /* For generate a hash id. */
+    pub cmp : lexbor_hash_cmp_f     /* For compare key. */
+}
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/core/lexbor.h
@@ -560,5 +571,10 @@ extern "C" {
         *mut c_uint) -> *mut lxb_char_t;
 
     // lexbor/core/hash.h
-    //pub fn     
+    pub fn lexbor_hash_create() -> *mut lexbor_hash_t;
+    pub fn lexbor_hash_init(hash : *mut lexbor_hash_t, table_size : c_uint,
+        struct_size : c_uint) -> lxb_status_t;
+    pub fn lexbor_hash_clean(hash : *mut lexbor_hash_t) -> ();
+    pub fn lexbor_hash_destroy(hash : *mut lexbor_hash_t, destroy_obj : bool)
+        -> *mut lexbor_hash_t;
 }
