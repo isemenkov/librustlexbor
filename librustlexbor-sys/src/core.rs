@@ -250,12 +250,14 @@ pub type lexbor_hash_copy_f = extern "C" fn(hash : *mut lexbor_hash_t, entry :
 pub type lexbor_hash_cmp_f = extern "C" fn(first : *const lxb_char_t, second :
     *mut lxb_char_t, size : c_uint) -> bool;
 
+#[repr(C)]
 pub struct lexbor_hash_insert_t {
     pub hash : lexbor_hash_id_f,    /* For generate a hash id. */
     pub cmp : lexbor_hash_cmp_f,    /* For compare key. */
     pub copy : lexbor_hash_copy_f   /* For copy key. */
 }
 
+#[repr(C)]
 pub struct lexbor_hash_search_t {
     pub hash : lexbor_hash_id_f,    /* For generate a hash id. */
     pub cmp : lexbor_hash_cmp_f     /* For compare key. */
@@ -577,4 +579,22 @@ extern "C" {
     pub fn lexbor_hash_clean(hash : *mut lexbor_hash_t) -> ();
     pub fn lexbor_hash_destroy(hash : *mut lexbor_hash_t, destroy_obj : bool)
         -> *mut lexbor_hash_t;
+    pub fn lexbor_hash_insert(hash : *mut lexbor_hash_t, insert : 
+        *const lexbor_hash_insert_t, key : *const lxb_char_t, length : c_uint)
+        -> *mut c_void;
+    pub fn lexbor_hash_insert_by_entry(hash : *mut lexbor_hash_t, entry :
+        *mut lexbor_hash_entry_t, search : *const lexbor_hash_search_t, key :
+        *const lxb_char_t, length : c_uint) -> *mut c_void;
+    pub fn lexbor_hash_remove(hash : *mut lexbor_hash_t, search : 
+        *const lexbor_hash_search_t, key : *const lxb_char_t, length : c_uint)
+        -> ();
+    pub fn lexbor_hash_search(hash : *mut lexbor_hash_t, search : 
+        *const lexbor_hash_search_t, key : *const lxb_char_t, length : c_uint)
+        -> *mut c_void;
+    pub fn lexbor_hash_remove_by_hash_id(hash : *mut lexbor_hash_t, hash_id : 
+        u32, key : *const lxb_char_t, length : c_uint, cmp_func :
+        lexbor_hash_cmp_f) -> ();
+    pub fn lexbor_hash_search_by_hash_id(hash : *mut lexbor_hash_t, hash_id :
+        u32, key : *const lxb_char_t, length : c_uint, cmp_func :
+        lexbor_hash_cmp_f) -> *mut c_void;
 }
