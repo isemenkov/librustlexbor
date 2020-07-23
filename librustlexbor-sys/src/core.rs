@@ -597,4 +597,19 @@ extern "C" {
     pub fn lexbor_hash_search_by_hash_id(hash : *mut lexbor_hash_t, hash_id :
         u32, key : *const lxb_char_t, length : c_uint, cmp_func :
         lexbor_hash_cmp_f) -> *mut c_void;
+    pub fn lexbor_hash_make_id(key : *const lxb_char_t, length : c_uint) -> u32;
+    pub fn lexbor_hash_make_id_lower(key : *const lxb_char_t, length : c_uint)
+        -> u32;
+    pub fn lexbor_hash_make_id_upper(key : *const lxb_char_t, length : c_uint)
+        -> u32;
+    pub fn lexbor_hash_copy(hash : *mut lexbor_hash_t, entry : 
+        *mut lexbor_hash_entry_t, key : *const lxb_char_t, length : c_uint) 
+        -> lxb_status_t;
+    pub fn lexbor_hash_copy_lower(hash : *mut lexbor_hash_t, entry :
+        *mut lexbor_hash_entry_t, key : *const lxb_char_t, length : c_uint)
+        -> lxb_status_t;
+    pub fn lexbor_hash_copy_upper(hash : *mut lexbor_hash_t, entry :
+        *mut lexbor_hash_entry_t, key : *const lxb_char_t, length : c_uint)
+        -> lxb_status_t;
+    
 }
