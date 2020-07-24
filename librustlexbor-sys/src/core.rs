@@ -263,6 +263,37 @@ pub struct lexbor_hash_search_t {
     pub cmp : lexbor_hash_cmp_f     /* For compare key. */
 }
 
+#[repr(C)]
+pub enum lexbor_in_opt {
+    LEXBOR_IN_OPT_UNDEF                                                 = 0x00,
+    LEXBOR_IN_OPT_READONLY                                              = 0x01,
+    LEXBOR_IN_OPT_DONE                                                  = 0x02,
+    LEXBOR_IN_OPT_FAKE                                                  = 0x04,
+    LEXBOR_IN_OPT_ALLOC                                                 = 0x08
+}
+
+pub type lexbor_in_opt_t = c_int;
+
+#[repr(C)]
+pub struct lexbor_in_t {
+    pub nodes : lexbor_dobject_t
+}
+
+#[repr(C)]
+pub struct lexbor_in_node_t {
+    pub offset : c_uint,
+    pub opt : lexbor_in_opt_t,
+
+    pub begin : *const lxb_char_t,
+    pub end : *const lxb_char_t,
+    pub _use : *const lxb_char_t,
+    
+    pub next : *mut lexbor_in_node_t,
+    pub prev : *mut lexbor_in_node_t,
+
+    pub incoming : *mut lexbor_in_t
+}
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/core/lexbor.h
@@ -612,4 +643,11 @@ extern "C" {
         *mut lexbor_hash_entry_t, key : *const lxb_char_t, length : c_uint)
         -> lxb_status_t;
     
+    // lexbor/core/in.h
+    pub fn lexbor_in_create() -> *mut lexbor_in_t;
+    pub fn lexbor_in_init(incoming : *mut lexbor_in_t, chunk_size : c_uint)
+        -> lxb_status_t;
+    pub fn lexbor_in_clean(incoming : *mut lexbor_in_t) -> ();
+    pub fn lexbor_in_destroy(incoming : *mut lexbor_in_t, self_destroy : bool)
+        -> *mut lexbor_in_t;
 }
