@@ -28,7 +28,62 @@
 /*                                                                            */
 /******************************************************************************/
 
-pub mod core;
-pub mod utils;
-pub mod ns;
-pub mod tag;
+#![allow(non_camel_case_types)]
+
+#[path="core.rs"] pub mod core;
+extern crate libc;
+
+use libc::{c_uint};
+
+#[repr(C)]
+pub enum lxb_ns_id_enum_t {
+    LXB_NS__UNDEF                                                      = 0x00,
+    LXB_NS__ANY                                                        = 0x01,
+    LXB_NS_HTML                                                        = 0x02,
+    LXB_NS_MATH                                                        = 0x03,
+    LXB_NS_SVG                                                         = 0x04,
+    LXB_NS_XLINK                                                       = 0x05,
+    LXB_NS_XML                                                         = 0x06,
+    LXB_NS_XMLNS                                                       = 0x07,
+    LXB_NS__LAST_ENTRY                                                 = 0x08       
+}
+
+pub type lxb_ns_id_t = usize;
+pub type lxb_ns_prefix_id_t = usize;
+
+#[repr(C)]
+pub struct lxb_ns_data_t {
+    pub entry : core::lexbor_hash_entry_t,
+
+    pub ns_id : lxb_ns_id_t,
+    pub ref_count : c_uint,
+    pub read_only : bool
+}
+
+#[repr(C)]
+pub struct lxb_ns_prefix_data_t {
+    pub entry : core::lexbor_hash_entry_t,
+
+    pub prefix_id : lxb_ns_prefix_id_t,
+    pub ref_count : c_uint,
+    pub read_only : bool
+}
+
+#[link(name = "lexbor")] 
+extern "C" {
+    // lexbor/ns/ns.h
+    pub fn lxb_ns_by_id(hash : *mut core::lexbor_hash_t, ns_id : lxb_ns_id_t,
+        length : *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_ns_data_by_id(hash : *mut core::lexbor_hash_t, ns_id : 
+        lxb_ns_id_t) -> *const lxb_ns_data_t;
+    pub fn lxb_ns_data_by_link(hash : *mut core::lexbor_hash_t, name :
+        *const core::lxb_char_t, length : c_uint) -> *const lxb_ns_data_t;
+    pub fn lxb_ns_prefix_append(hash : *mut core::lexbor_hash_t, prefix :
+        *const core::lxb_char_t, length : c_uint) 
+        -> *const lxb_ns_prefix_data_t;
+    pub fn lxb_ns_prefix_data_by_id(hash : *mut core::lexbor_hash_t, prefix_id :
+        lxb_ns_prefix_id_t) -> *const lxb_ns_prefix_data_t;
+    pub fn lxb_ns_prefix_data_by_name(hash : *mut core::lexbor_hash_t, name :
+        *const core::lxb_char_t, length : c_uint) 
+        -> *const lxb_ns_prefix_data_t;
+}
