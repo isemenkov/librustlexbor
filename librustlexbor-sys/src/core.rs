@@ -32,7 +32,7 @@
 
 extern crate libc;
 
-use libc::{c_uchar, c_short, c_int, c_uint, c_ulong, c_double };
+use libc::{c_char, c_uchar, c_short, c_int, c_uint, c_ulong, c_double };
 use std::os::raw::c_void;
 
 pub type lxb_codepoint_t = u32;
@@ -292,6 +292,47 @@ pub struct lexbor_in_node_t {
     pub prev : *mut lexbor_in_node_t,
 
     pub incoming : *mut lexbor_in_t
+}
+
+#[repr(C)]
+pub struct lexbor_plog_entry_t {
+    pub data : *const lxb_char_t,
+    pub context : *mut c_void,
+    pub id : c_uint
+}
+
+#[repr(C)]
+pub struct lexbor_plog_t {
+    pub list : lexbor_array_obj_t
+}
+
+#[repr(C)]
+pub struct lexbor_sbst_entry_static_t {
+    pub key : lxb_char_t,
+
+    pub value : *mut c_void,
+    pub value_len : c_uint,
+    
+    pub left : c_uint,
+    pub right : c_uint,
+    pub next : c_uint
+}
+
+#[repr(C)]
+pub struct lexbor_shs_entry_t {
+    pub key : *mut c_char,
+    pub value : *mut c_void,
+
+    pub key_len : c_uint,
+    pub next : c_uint 
+}
+
+#[repr(C)]
+pub struct lexbor_shs_hash_t {
+    pub key : u32,
+    pub value : *mut c_void,
+
+    pub next : c_uint
 }
 
 #[link(name = "lexbor")]
@@ -650,4 +691,64 @@ extern "C" {
     pub fn lexbor_in_clean(incoming : *mut lexbor_in_t) -> ();
     pub fn lexbor_in_destroy(incoming : *mut lexbor_in_t, self_destroy : bool)
         -> *mut lexbor_in_t;
+    pub fn lexbor_in_node_make(incoming : *mut lexbor_in_t, last_node :
+        *mut lexbor_in_node_t, buf : *const lxb_char_t, buf_size : c_uint)
+        -> *mut lexbor_in_node_t;
+    pub fn lexbor_in_node_clean(node : *mut lexbor_in_node_t) -> ();
+    pub fn lexbor_in_node_destroy(incoming : *mut lexbor_in_t, node :
+        *mut lexbor_in_node_t, self_destroy : bool) -> *mut lexbor_in_node_t;
+    pub fn lexbor_in_node_split(node : *mut lexbor_in_node_t, pos : 
+        *const lxb_char_t) -> *mut lexbor_in_node_t;
+    pub fn lexbor_in_node_find(node : *mut lexbor_in_node_t, pos : 
+        *const lxb_char_t) -> *mut lexbor_in_node_t;
+    pub fn lexbor_in_node_pos_up(node : *mut lexbor_in_node_t, return_node :
+        *mut *mut lexbor_in_node_t, pos : *const lxb_char_t, offset : c_uint)
+        -> *const lxb_char_t;
+    pub fn lexbor_in_node_pos_down(node : *mut lexbor_in_node_t, return_node :
+        *mut *mut lexbor_in_node_t, pos : *const lxb_char_t, offset : c_uint)
+        -> *const lxb_char_t;
+    pub fn lexbor_in_node_begin_noi(node : *const lexbor_in_node_t) 
+        -> *const lxb_char_t;
+    pub fn lexbor_in_node_end_noi(node : *const lexbor_in_node_t) 
+        -> *const lxb_char_t;
+    pub fn lexbor_in_node_offset_noi(node : *const lexbor_in_node_t) -> c_uint;
+    pub fn lexbor_in_node_next_noi(node : *const lexbor_in_node_t)
+        -> *mut lexbor_in_node_t;
+    pub fn lexbor_in_node_prev_noi(node : *const lexbor_in_node_t)
+        -> *mut lexbor_in_node_t;
+    pub fn lexbor_in_node_in_noi(node : *const lexbor_in_node_t)
+        -> *mut lexbor_in_node_t;
+    pub fn lexbor_in_segment_noi(node : *const lexbor_in_node_t, data :
+        *const lxb_char_t) -> bool;
+        
+    // lexbor/core/perf.h
+    pub fn lexbor_perf_create() -> *mut c_void;
+    pub fn lexbor_perf_clean(perf : *mut c_void) -> ();
+    pub fn lexbor_perf_destroy(perf : *mut c_void) -> ();
+    pub fn lexbor_perf_begin(perf : *mut c_void) -> lxb_status_t;
+    pub fn lexbor_perf_end(perf : *mut c_void) -> lxb_status_t;
+    pub fn lexbor_perf_in_sec(perf : *mut c_void) -> c_double;
+
+    // lexbor/core/plog.h
+    pub fn lexbor_plog_init(plog : *mut lexbor_plog_t, init_size : c_uint,
+        struct_size : c_uint) -> lxb_status_t;
+    pub fn lexbor_plog_destroy(plog : *mut lexbor_plog_t, self_destroy : bool)
+        -> *mut lexbor_plog_t;
+    pub fn lexbor_plog_create_noi() -> *mut lexbor_plog_t;
+    pub fn lexbor_plog_clean_noi(plog : *mut lexbor_plog_t) -> ();
+    pub fn lexbor_plog_push_noi(plog : *mut lexbor_plog_t, data :
+        *const lxb_char_t, ctx : *mut c_void, id : c_uint) -> *mut c_void;
+    pub fn lexbor_plog_length_noi(plog : *mut lexbor_plog_t) -> c_uint;
+
+    // lexbor/core/shs.h
+    pub fn lexbor_shs_entry_get_static(tree : *const lexbor_shs_entry_t, key :
+        *const lxb_char_t, size : c_uint) -> *const lexbor_shs_entry_t;
+    pub fn lexbor_shs_entry_get_lower_static(root : *const lexbor_shs_entry_t,
+        key : *const lxb_char_t, key_len : c_uint) -> *const lexbor_shs_entry_t;
+    pub fn lexbor_shs_entry_get_upper_static(root : *const lexbor_shs_entry_t,
+        key : *const lxb_char_t, key_len : c_uint) -> *const lexbor_shs_entry_t;
+    
+    // lexbor/core/strtod.h
+    pub fn lexbor_strtod_internal(start : *const lxb_char_t, length : c_uint,
+        exp : c_int) -> c_double;    
 }
