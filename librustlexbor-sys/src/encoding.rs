@@ -499,5 +499,288 @@ extern "C" {
         *const core::lxb_char_t) -> core::lxb_codepoint_t;
     pub fn lxb_encoding_decode_x_user_defined_single(ctx : 
         *mut lxb_encoding_decode_t, data : *const *mut core::lxb_char_t, end : 
-        *const core::lxb_char_t) -> core::lxb_codepoint_t;       
+        *const core::lxb_char_t) -> core::lxb_codepoint_t; 
+        
+    // lexbor/encoding/encode.h
+    pub fn lxb_encoding_encode_default(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_auto(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_undefined(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_big5(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_euc_jp(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_euc_kr(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_gbk(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_ibm866(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_2022_jp(ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_2022_jp_eof(ctx : *mut lxb_encoding_encode_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_10(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_13(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_14(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_15(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_16(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_2(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_3(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_4(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_5(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_6(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_7(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_8(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_iso_8859_8_i(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_koi8_r(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_koi8_u(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_shift_jis(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_utf_16be(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_utf_16le(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_utf_8(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_gb18030(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_macintosh(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_replacement(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1250(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1251(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1252(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1253(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1254(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1255(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1256(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1257(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_1258(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_windows_874(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_x_mac_cyrillic(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_x_user_defined(ctx : *mut lxb_encoding_encode_t, 
+        cp : *const *mut core::lxb_codepoint_t, end : 
+        *const core::lxb_codepoint_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_default_single(ctx : *mut lxb_encoding_encode_t, 
+        data : *mut *mut core::lxb_char_t, end : *const core::lxb_char_t,
+        cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_auto_single(ctx : *mut lxb_encoding_encode_t, 
+        data : *mut *mut core::lxb_char_t, end : *const core::lxb_char_t,
+        cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_undefined_single(ctx : 
+        *mut lxb_encoding_encode_t,  data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_big5_single(ctx : *mut lxb_encoding_encode_t, 
+        data : *mut *mut core::lxb_char_t, end : *const core::lxb_char_t,
+        cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_euc_jp_single(ctx : *mut lxb_encoding_encode_t, 
+        data : *mut *mut core::lxb_char_t, end : *const core::lxb_char_t,
+        cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_euc_kr_single(ctx : *mut lxb_encoding_encode_t, 
+        data : *mut *mut core::lxb_char_t, end : *const core::lxb_char_t,
+        cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_gbk_single(ctx : *mut lxb_encoding_encode_t, 
+        data : *mut *mut core::lxb_char_t, end : *const core::lxb_char_t,
+        cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_ibm866_single(ctx : *mut lxb_encoding_encode_t, 
+        data : *mut *mut core::lxb_char_t, end : *const core::lxb_char_t,
+        cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_2022_jp_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_2022_jp_eof_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_10_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_13_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;    
+    pub fn lxb_encoding_encode_iso_8859_14_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_15_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_16_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_2_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_3_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_4_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_5_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_6_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_7_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_iso_8859_8_i_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_koi8_r_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_koi8_u_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_shift_jis_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_utf_16be_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_utf_16le_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_utf_8_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_gb18030_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_macintosh_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_replacement_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_windows_1250_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8; 
+    pub fn lxb_encoding_encode_windows_1251_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_windows_1252_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_windows_1253_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_windows_1254_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_windows_1255_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_windows_1256_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8; 
+    pub fn lxb_encoding_encode_windows_1257_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_windows_1258_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_windows_874_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_x_mac_cyrillic_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;
+    pub fn lxb_encoding_encode_x_user_defined_single(ctx : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end : 
+        *const core::lxb_char_t, cp : core::lxb_codepoint_t) -> i8;  
+
+    // lexbor/encoding/encoding.h
+    pub fn lxb_encoding_data_by_pre_name(name : *const core::lxb_char_t, 
+        length : c_uint) -> *const lxb_encoding_data_t;
+    pub fn lxb_encoding_encode_init_noi(encode : *mut lxb_encoding_encode_t,
+        encoding_data : *const lxb_encoding_data_t, buffer_out : 
+        *mut core::lxb_char_t, buffer_length : c_uint) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_finish_noi(encode : *mut lxb_encoding_encode_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_buf_noi(encode : *mut lxb_encoding_encode_t)
+        -> *mut core::lxb_char_t;
+    pub fn lxb_encoding_encode_buf_set_noi(encode : *mut lxb_encoding_encode_t,
+        buffer_out : *mut core::lxb_char_t, buffer_length : c_uint) -> ();
+    pub fn lxb_encoding_encode_buf_used_set_noi(encode : 
+        *mut lxb_encoding_encode_t, buffer_used : c_uint) -> ();
+    pub fn lxb_encoding_encode_buf_used_noi(encode : *mut lxb_encoding_encode_t)
+        -> c_uint;
+    pub fn lxb_encoding_encode_replace_set_noi(encode : 
+        *mut lxb_encoding_encode_t, replace : *const core::lxb_char_t, 
+        buffer_length : c_uint) -> core::lxb_status_t;
+    
 }
