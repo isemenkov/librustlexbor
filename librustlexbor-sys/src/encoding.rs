@@ -782,5 +782,58 @@ extern "C" {
     pub fn lxb_encoding_encode_replace_set_noi(encode : 
         *mut lxb_encoding_encode_t, replace : *const core::lxb_char_t, 
         buffer_length : c_uint) -> core::lxb_status_t;
-    
+    pub fn lxb_encoding_encode_buf_add_to_noi(encode : 
+        *mut lxb_encoding_encode_t, data : *mut core::lxb_char_t, length : 
+        c_uint) -> core::lxb_status_t;
+    pub fn lxb_encoding_dencode_init_noi(decode : *mut lxb_encoding_encode_t,
+        encoding_data : *const lxb_encoding_data_t, buffer_out :
+        *mut core::lxb_codepoint_t, buffer_length : c_uint) 
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_decode_finish_noi(decode : *mut lxb_encoding_decode_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_decode_buf_noi(decode : *mut lxb_encoding_decode_t)
+        -> *mut core::lxb_codepoint_t;
+    pub fn lxb_encoding_decode_buf_set_noi(decode : *mut lxb_encoding_decode_t,
+        buffer_out : *mut core::lxb_codepoint_t, buffer_length : c_uint) -> ();
+    pub fn lxb_encoding_decode_buf_used_set_noi(decode : 
+        *mut lxb_encoding_decode_t, buffer_used : c_uint) -> ();
+    pub fn lxb_encoding_decode_buf_used_noi(decode : *mut lxb_encoding_decode_t)
+        -> c_uint;
+    pub fn lxb_encoding_decode_replace_set_noi(decode : 
+        *mut lxb_encoding_decode_t, replace : *const core::lxb_codepoint_t,
+        length : c_uint) -> core::lxb_status_t;
+    pub fn lxb_encoding_decode_buf_add_to_noi(decode : 
+        *mut lxb_encoding_decode_t, data : *const core::lxb_codepoint_t, 
+        length : c_uint) -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_init_single_noi(encode : 
+        *mut lxb_encoding_encode_t, encoding_data : *const lxb_encoding_data_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_encode_finish_single_noi(encode : 
+        *mut lxb_encoding_encode_t, data : *mut *mut core::lxb_char_t, end :
+        *const core::lxb_char_t) -> i8;
+    pub fn lxb_encoding_decode_init_single_noi(decode : 
+        *mut lxb_encoding_decode_t, encoding_data : *const lxb_encoding_data_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_decode_finish_single_noi(decode :
+        *mut lxb_encoding_decode_t) -> core::lxb_status_t;
+    pub fn lxb_encoding_data_by_name_noi(name : *const core::lxb_char_t,
+        length : c_uint) -> *const lxb_encoding_data_t;
+    pub fn lxb_encoding_data_noi(encoding : lxb_encoding_t) 
+        -> *const lxb_encoding_data_t;
+    pub fn lxb_encoding_encode_function_noi(encoding : lxb_encoding_t)
+        -> lxb_encoding_encode_f;
+    pub fn lxb_encoding_decode_function_noi(encoding : lxb_encoding_t)
+        -> lxb_encoding_decode_f;
+    pub fn lxb_encoding_data_call_encode_noi(encoding_data : 
+        *mut lxb_encoding_data_t, ctx : *mut lxb_encoding_encode_t, cp :
+        *const *mut core::lxb_codepoint_t, end : *const core::lxb_codepoint_t)
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_data_call_decode_noi(encoding_data : 
+        *mut lxb_encoding_data_t, ctx : *mut lxb_encoding_decode_t, data :
+        *const *mut core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> core::lxb_status_t;
+    pub fn lxb_encoding_data_encoding_noi(data : *mut lxb_encoding_data_t)
+        -> lxb_encoding_t;
+    pub fn lxb_encoding_encode_t_sizeof() -> c_uint;
+    pub fn lxb_encoding_decode_t_sizeof() -> c_uint;
 }
