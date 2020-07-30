@@ -163,6 +163,7 @@ pub type lxb_css_syntax_token_lc_bracket_t = lxb_css_syntax_token_base_t;
 pub type lxb_css_syntax_token_rc_bracket_t = lxb_css_syntax_token_base_t;
 pub type lxb_css_syntax_token_comment_t = lxb_css_syntax_token_string_t;
 
+/*
 #[repr(C)]
 pub union Types {
     pub base : lxb_css_syntax_token_base_t,
@@ -184,9 +185,55 @@ pub union Types {
     pub at_keyword : lxb_css_syntax_token_at_keyword_t,
     pub whitespace : lxb_css_syntax_token_whitespace_t
 }
+*/
+
+pub type lxb_css_syntax_token_t = *mut c_void;
+
+pub type lxb_css_syntax_tokenizer_state_f = extern "C" fn(tkz :
+    *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t, end :
+    *const core::lxb_char_t) -> *const core::lxb_char_t;
+
+pub type lxb_css_syntax_tokenizer_cb_f = extern "C" fn(tkz :
+    *mut lxb_css_syntax_tokenizer_t, token : *mut lxb_css_syntax_token_t, ctx :
+    *mut c_void) -> *mut lxb_css_syntax_token_t;
 
 #[repr(C)]
-pub struct lxb_css_syntax_token_t {
-    pub types : Types
+pub enum lxb_css_syntax_tokenizer_opt {
+    LXB_CSS_SYNTAX_TOKENIZER_OPT_UNDEF                                 = 0x00,
+    LXB_CSS_SYNTAX_TOKENIZER_OPT_WO_COPY                               = 0x01 
 }
 
+#[repr(C)]
+pub enum lxb_css_syntax_process_state_t {
+    LXB_CSS_SYNTAX_TOKENIZER_BEGIN                                     = 0x00,
+    LXB_CSS_SYNTAX_TOKENIZER_PROCESS                                   = 0x01,
+    LXB_CSS_SYNTAX_TOKENIZER_END                                       = 0x02   
+}
+
+#[link(name = "lexbor")]
+extern "C" {
+    // lexbor/css/systax/token.h
+    pub fn lxb_css_syntax_token_type_name_by_id(_type : 
+        lxb_css_syntax_token_type_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_token_type_id_by_name(type_name : 
+        *const core::lxb_char_t, len : c_uint) -> lxb_css_syntax_token_type_t;
+    pub fn lxb_css_syntax_token_make_data(token : *mut lxb_css_syntax_token_t,
+        _in : *mut core::lexbor_in_node_t, mraw : *mut core::lexbor_mraw_t,
+        td : *mut lxb_css_syntax_token_data_t) -> core::lxb_status_t;
+    pub fn lxb_css_syntax_token_serialize_cb(token : 
+        *mut lxb_css_syntax_token_t, cb : lxb_css_syntax_token_cb_f, mraw : 
+        *mut core::lexbor_mraw_t) -> core::lxb_status_t;
+    pub fn lxb_css_syntax_token_serialize_str(token : 
+        *mut lxb_css_syntax_token_t, _str : *mut core::lexbor_str_t, mraw :
+        *mut core::lexbor_mraw_t) -> core::lxb_status_t;
+    pub fn lxb_css_syntax_token_create_noi(dobj : *mut core::lexbor_dobject_t)
+        -> *mut lxb_css_syntax_token_t;
+    pub fn lxb_css_syntax_token_clean_noi(token : *mut lxb_css_syntax_token_t)
+        -> ();
+    pub fn lxb_css_syntax_token_destroy_noi(token : *mut lxb_css_syntax_token_t,
+        dobj : *mut core::lexbor_dobject_t) -> *mut lxb_css_syntax_token_t;
+    pub fn lxb_css_syntax_token_type_name_noi(token : 
+        *mut lxb_css_syntax_token_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_token_type_noi(token : *mut lxb_css_syntax_token_t)
+        -> lxb_css_syntax_token_type_t;
+}
