@@ -210,6 +210,58 @@ pub enum lxb_css_syntax_process_state_t {
     LXB_CSS_SYNTAX_TOKENIZER_END                                       = 0x02   
 }
 
+#[repr(C)]
+pub struct lxb_css_syntax_tokenizer_numeric_t {
+    pub data : [core::lxb_char_t; 128],
+    pub buf : *mut core::lxb_char_t,
+    pub end : *mut core::lxb_char_t,
+
+    pub exponent : c_int,
+    pub e_digit : c_int,
+    pub is_negative : bool,
+    pub e_is_negative : bool
+}
+
+#[repr(C)]
+pub struct lxb_css_syntax_tokenizer_t {
+    pub state : lxb_css_syntax_tokenizer_state_f,
+    pub return_state : lxb_css_syntax_tokenizer_state_f,
+
+    pub cb_token_done : lxb_css_syntax_tokenizer_cb_f,
+    cb_token_ctx : *mut c_void,
+
+    /* Current process token */
+    pub token : *mut lxb_css_syntax_token_t,
+
+    /* Memory for tokens */
+    pub dobj_token : *mut core::lexbor_dobject_t,
+    pub mraw : *mut core::lexbor_mraw_t,
+
+    /* Incoming Buffer and current process buffer */
+    pub incoming : *mut core::lexbor_in_t,
+    pub incoming_first : *mut core::lexbor_in_node_t,
+    pub incoming_node : *mut core::lexbor_in_node_t,
+    pub incoming_done : *mut core::lexbor_in_node_t,
+
+    pub parse_errors : core::lexbor_array_obj_t,
+
+    /* Temp */
+    pub count : c_int,
+    pub num : c_uint,
+    pub begin : *const core::lxb_char_t,
+    pub end : *const core::lxb_char_t,
+    pub str_ending : core::lxb_char_t,
+    pub numeric : lxb_css_syntax_tokenizer_numeric_t,
+    pub token_data : lxb_css_syntax_token_data_t,
+
+    /* Process */
+    pub opt : c_uint, /* bitmap */
+    pub process_state : lxb_css_syntax_process_state_t,
+    pub status : core::lxb_status_t,
+    pub is_eof : bool,
+    pub reuse : bool
+}
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/css/systax/token.h
@@ -236,4 +288,35 @@ extern "C" {
         *mut lxb_css_syntax_token_t) -> *const core::lxb_char_t;
     pub fn lxb_css_syntax_token_type_noi(token : *mut lxb_css_syntax_token_t)
         -> lxb_css_syntax_token_type_t;
+
+    // lexbor/css/syntax/tokenizer.h
+    pub fn lxb_css_syntax_tokenizer_create() -> *mut lxb_css_syntax_tokenizer_t;
+    pub fn lxb_css_syntax_tokenizer_init(tkz : *mut lxb_css_syntax_tokenizer_t)
+        -> core::lxb_status_t;
+    pub fn lxb_css_syntax_tokenizer_clean(tkz : *mut lxb_css_syntax_tokenizer_t)
+        -> ();
+    pub fn lxb_css_syntax_tokenizer_destroy(tkz : 
+        *mut lxb_css_syntax_tokenizer_t) -> *mut lxb_css_syntax_tokenizer_t;
+    pub fn lxb_css_syntax_tokenizer_parse(tkz : *mut lxb_css_syntax_tokenizer_t,
+        data : *const core::lxb_char_t, size : c_uint) -> core::lxb_status_t;
+    pub fn lxb_css_syntax_tokenizer_begin(tkz : *mut lxb_css_syntax_tokenizer_t)
+        -> core::lxb_status_t;
+    pub fn lxb_css_syntax_tokenizer_chunk(tkz : *mut lxb_css_syntax_tokenizer_t,
+        data : *const core::lxb_char_t, size : c_uint) -> core::lxb_status_t;
+    pub fn lxb_css_syntax_tokenizer_end(tkz : *mut lxb_css_syntax_tokenizer_t)
+        -> core::lxb_status_t;
+    pub fn lxb_css_syntax_tokenizer_change_incoming(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, pos : *const core::lxb_char_t)
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_tokenizer_token_cb_set_noi(tkz :
+        *mut lxb_css_syntax_tokenizer_t, cb_done : 
+        lxb_css_syntax_tokenizer_cb_f, ctx : *mut c_void) -> ();
+    pub fn lxb_css_syntax_tokenizer_last_needed_in_noi(tkz :
+        *mut lxb_css_syntax_tokenizer_t, _in : *mut core::lexbor_in_node_t) 
+        -> ();
+    pub fn lxb_css_syntax_tokenizer_make_data_noi(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, token : *mut lxb_css_syntax_token_t)
+        -> core::lxb_status_t;
+    pub fn lxb_css_syntax_tokenizer_status_noi(tkz : 
+        *mut lxb_css_syntax_tokenizer_t) -> core::lxb_status_t;   
 }
