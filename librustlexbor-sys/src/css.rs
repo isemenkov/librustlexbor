@@ -318,5 +318,73 @@ extern "C" {
         *mut lxb_css_syntax_tokenizer_t, token : *mut lxb_css_syntax_token_t)
         -> core::lxb_status_t;
     pub fn lxb_css_syntax_tokenizer_status_noi(tkz : 
-        *mut lxb_css_syntax_tokenizer_t) -> core::lxb_status_t;   
+        *mut lxb_css_syntax_tokenizer_t) -> core::lxb_status_t;
+        
+    // lexbor/css/syntax/state.h
+    pub fn lxb_css_syntax_state_data(tkz : *mut lxb_css_syntax_tokenizer_t,
+        data : *const core::lxb_char_t, end : *mut core::lxb_char_t)
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_delim(tkz : *mut lxb_css_syntax_tokenizer_t,
+        data : *const core::lxb_char_t, end : *mut core::lxb_char_t)
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_eof(tkz : *mut lxb_css_syntax_tokenizer_t,
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_comment_begin(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_whitespace(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_string(tkz : *mut lxb_css_syntax_tokenizer_t, 
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_hash(tkz : *mut lxb_css_syntax_tokenizer_t, 
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_lparenthesis(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_rparenthesis(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_plus(tkz : *mut lxb_css_syntax_tokenizer_t, 
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_comma(tkz : *mut lxb_css_syntax_tokenizer_t, 
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_minus(tkz : *mut lxb_css_syntax_tokenizer_t, 
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_full_stop(tkz : *mut lxb_css_syntax_tokenizer_t,
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_colon(tkz : *mut lxb_css_syntax_tokenizer_t, 
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t; 
+    pub fn lxb_css_syntax_state_semicolon(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_less_sign(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_at(tkz : *mut lxb_css_syntax_tokenizer_t, 
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_ls_bracket(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t; 
+    pub fn lxb_css_syntax_state_rsolidus(tkz : *mut lxb_css_syntax_tokenizer_t, 
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_rs_bracket(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_lc_bracket(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_state_rc_bracket(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
+        end : *const core::lxb_char_t) -> *const core::lxb_char_t;  
 }
