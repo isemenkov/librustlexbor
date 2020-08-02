@@ -262,6 +262,34 @@ pub struct lxb_css_syntax_tokenizer_t {
     pub reuse : bool
 }
 
+#[repr(C)]
+pub enum lxb_css_syntax_tokenizer_error_id_t {
+    /* unexpected-eof */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_UNEOF                               = 0x0000,
+    /* eof-in-comment */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_EOINCO,
+    /* eof-in-string */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_EOINST,
+    /* eof-in-url */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_EOINUR,
+    /* qo-in-url */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_QOINUR,
+    /* wrong-escape-in-url */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_WRESINUR,
+    /* newline-in-string */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_NEINST,
+    /* bad-char */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_BACH,
+    /* bad-code-point */
+    LXB_CSS_SYNTAX_TOKENIZER_ERROR_BACOPO
+}
+
+#[repr(C)]
+pub struct lxb_css_syntax_tokenizer_error_t {
+    pub pos : *const core::lxb_char_t,
+    pub id : lxb_css_syntax_tokenizer_error_id_t
+}
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/css/systax/token.h
@@ -387,4 +415,30 @@ extern "C" {
     pub fn lxb_css_syntax_state_rc_bracket(tkz : 
         *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t,
         end : *const core::lxb_char_t) -> *const core::lxb_char_t;  
+    
+    // lexbor/css/syntax/consume.h
+    pub fn lxb_css_syntax_consume_string(tkz : *mut lxb_css_syntax_tokenizer_t,
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+        -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_consume_before_numeric(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t, end : 
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_consume_numeric(tkz : *mut lxb_css_syntax_tokenizer_t,
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+        -> *const core::lxb_char_t;    
+    pub fn lxb_css_syntax_consume_numeric_decimal(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t, end : 
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_consume_ident_like(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t, end : 
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_css_syntax_consume_ident_like_not_url(tkz : 
+        *mut lxb_css_syntax_tokenizer_t, data : *const core::lxb_char_t, end : 
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+
+    // lexbor/css/syntax/tokenizer/error.h
+    pub fn lxb_css_syntax_tokenizer_error_add(parse_errors : 
+        *mut core::lexbor_array_obj_t, pos : *const core::lxb_char_t, id :
+        lxb_css_syntax_tokenizer_error_id_t) 
+        -> *mut lxb_css_syntax_tokenizer_error_t;
 }
