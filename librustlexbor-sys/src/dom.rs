@@ -38,6 +38,8 @@ extern crate libc;
 use libc::{c_uint};
 use std::os::raw::c_void;
 
+pub type lxb_dom_attr_id_t = usize;
+
 #[repr(C)]
 pub enum lxb_dom_exception_code_t {
     LXB_DOM_INDEX_SIZE_ERR                                             = 0x00,
@@ -68,13 +70,73 @@ pub enum lxb_dom_exception_code_t {
 }
 
 #[repr(C)]
-pub struct lxb_dom_event_target_t {
+pub enum lxb_dom_attr_id_enum_t {
+    LXB_DOM_ATTR__UNDEF                                                = 0x0000,
+    LXB_DOM_ATTR_ALT                                                   = 0x0001,
+    LXB_DOM_ATTR_CHARSER                                               = 0x0002,
+    LXB_DOM_ATTR_CHECKED                                               = 0x0003,
+    LXB_DOM_ATTR_CLASS                                                 = 0x0004,
+    LXB_DOM_ATTR_CONTENT                                               = 0x0005,
+    LXB_DOM_ATTR_DIR                                                   = 0x0006,
+    LXB_DOM_ATTR_DISABLED                                              = 0x0007,
+    LXB_DOM_ATTR_FOR                                                   = 0x0008,
+    LXB_DOM_ATTR_HEIGHT                                                = 0x0009,
+    LXB_DOM_ATTR_HREF                                                  = 0x000a,
+    LXB_DOM_ATTR_HTTP_EQUIV                                            = 0x000b,
+    LXB_DOM_ATTR_ID                                                    = 0x000c,
+    LXB_DOM_ATTR_IS                                                    = 0x000d,
+    LXB_DOM_ATTR_MAXLENGTH                                             = 0x000e,
+    LXB_DOM_ATTR_POOL                                                  = 0x000f,
+    LXB_DOM_ATTR_SCHEME                                                = 0x0010,
+    LXB_DOM_ATTR_SLOT                                                  = 0x0011,
+    LXB_DOM_ATTR_SRC                                                   = 0x0012,
+    LXB_DOM_ATTR_STYLE                                                 = 0x0013,
+    LXB_DOM_ATTR_TITLE                                                 = 0x0014,
+    LXB_DOM_ATTR_WIDTH                                                 = 0x0015,
+    LXB_DOM_ATTR__LAST_ENTRY                                           = 0x0016
+}
 
+#[repr(C)]
+pub struct lxb_dom_node_type_t {
+    LXB_DOM_NODE_TYPE_UNDEF                                            = 0x00,
+    LXB_DOM_NODE_TYPE_ELEMENT                                          = 0x01,
+    LXB_DOM_NODE_TYPE_ATTRIBUTE                                        = 0x02,
+    LXB_DOM_NODE_TYPE_TEXT                                             = 0x03,
+    LXB_DOM_NODE_TYPE_CDATA_SECTION                                    = 0x04,
+    LXB_DOM_NODE_TYPE_ENTITY_REFERENCE       /* historical */          = 0x05, 
+    LXB_DOM_NODE_TYPE_ENTITY                 /* historical */          = 0x06, 
+    LXB_DOM_NODE_TYPE_PROCESSING_INSTRUCTION                           = 0x07,
+    LXB_DOM_NODE_TYPE_COMMENT                                          = 0x08,
+    LXB_DOM_NODE_TYPE_DOCUMENT                                         = 0x09,
+    LXB_DOM_NODE_TYPE_DOCUMENT_TYPE                                    = 0x0A,
+    LXB_DOM_NODE_TYPE_DOCUMENT_FRAGMENT                                = 0x0B,
+    LXB_DOM_NODE_TYPE_NOTATION               /* historical */          = 0x0C, 
+    LXB_DOM_NODE_TYPE_LAST_ENTRY                                       = 0x0D
+}
+
+#[repr(C)]
+pub struct lxb_dom_event_target_t {
+    pub events : *mut c_void;
 }
 
 #[repr(C)]
 pub struct lxb_dom_node_t {
+    pub event_target : lxb_dom_event_target_t,
+    
+    pub local_name : usize,
+    pub prefix : usize,
+    pub ns : usize,
 
+    pub owner_document : *mut lxb_dom_document_t,
+
+    pub next : *mut lxb_dom_node_t,
+    pub prev : *mut lxb_dom_node_t,
+    pub parent : *mut lxb_dom_node_t,
+    pub first_child : *mut lxb_dom_node_t,
+    pub last_child : *mut lxb_dom_node_t,
+    pub user : *mut c_void,
+
+    pub _type : lxb_dom_node_type_t
 }
 
 #[repr(C)]
@@ -153,6 +215,9 @@ pub type lxb_dom_interface_create_f = extern "C" fn(document :
 pub type lxb_dom_interface_destroy_f = extern "C" fn(intrfc : 
     *mut lxb_dom_interface_t) -> *mut lxb_dom_interface_t;
 
+pub type lxb_dom_node_simple_walker_f = extern "C" fn(node : 
+    *mut lxb_dom_node_t, ctx : *mut c_void) -> core::lexbor_action_t;
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/dom/exception.h
@@ -183,5 +248,51 @@ extern "C" {
     pub fn lxb_dom_collection_node_noi(col : *mut lxb_dom_collection_t, idx :
         c_uint) -> *mut lxb_dom_node_t;
     pub fn lxb_dom_collection_length_noi(col : *mut lxb_dom_collection_t) 
-        -> c_uint;    
+        -> c_uint;
+        
+    // lexbor/dom/interfaces/event_target.h
+    pub fn lxb_dom_event_target_create(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_event_target_t;
+    pub fn lxb_dom_event_target_destroy(event_target : 
+        *mut lxb_dom_event_target_t, document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_event_target_t;
+    
+    // lexbor/dom/interfaces/node.h
+    pub fn lxb_dom_node_interface_create(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_node_t;
+    pub fn lxb_dom_node_interface_destroy(node : *mut lxb_dom_node_t)
+        -> *mut lxb_dom_node_t;
+    pub fn lxb_dom_node_destroy(node : *mut lxb_dom_node_t) 
+        -> *mut lxb_dom_node_t;
+    pub fn lxb_dom_node_destroy_deep(root : *mut lxb_dom_node_t)
+        -> *mut lxb_dom_node_t;
+    pub fn lxb_dom_node_name(node : *mut lxb_dom_node_t, len : *mut c_uint)
+        -> *const core::lxb_char_t;
+    pub fn lxb_dom_node_insert_child(to : *mut lxb_dom_node_t, node :
+        *mut lxb_dom_node_t) -> ();
+    pub fn lxb_dom_node_insert_before(to : *mut lxb_dom_node_t, node : 
+        *mut lxb_dom_node_t) -> ();
+    pub fn lxb_dom_node_insert_after(to : *mut lxb_dom_node_t, node :
+        *mut lxb_dom_node_t) -> ();
+    pub fn lxb_dom_node_remove(node : *mut lxb_dom_node_t) -> ();
+    pub fn lxb_dom_node_replace_all(parent : *mut lxb_dom_node_t, node :
+        *mut lxb_dom_node_t) -> core::lxb_status_t;
+    pub fn lxb_dom_node_simple_walk(root : *mut lxb_dom_node_t, walker_cb :
+        lxb_dom_node_simple_walker_f, ctx : *mut c_void) -> ();
+    pub fn lxb_dom_node_text_content(node : *mut lxb_dom_node_t, len :
+        *mut c_uint) -> *mut core::lxb_char_t;
+    pub fn lxb_dom_text_content_set(node : *mut lxb_dom_node_t, content :
+        *const core::lxb_char_t, len : c_uint) -> core::lxb_status_t;
+    pub fn lxb_dom_node_tag_id_noi(node : *mut lxb_dom_node_t) 
+        -> tag::lxb_tag_id_t;
+    pub fn lxb_dom_node_next_noi(node : *mut lxb_dom_node_t)
+        -> *mut lxb_dom_node_t;
+    pub fn lxb_dom_node_prev_noi(node : *mut lxb_dom_node_t)
+        -> *mut lxb_dom_node_t;
+    pub fn lxb_dom_node_parent_noi(node : *mut lxb_dom_node_t)
+        -> *mut lxb_dom_node_t;
+    pub fn lxb_dom_node_first_child_noi(node : *mut lxb_dom_node_t)
+        -> *mut lxb_dom_node_t;
+    pub fn lxb_dom_node_last_child_noi(node : *mut lxb_dom_node_t)
+        -> *mut lxb_dom_node_t;
 }
