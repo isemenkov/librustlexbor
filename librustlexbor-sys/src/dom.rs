@@ -115,6 +115,20 @@ pub struct lxb_dom_node_type_t {
 }
 
 #[repr(C)]
+pub enum lxb_dom_document_cmode_t {
+    LXB_DOM_DOCUMENT_CMODE_NO_QUIRKS                                   = 0x00,
+    LXB_DOM_DOCUMENT_CMODE_QUIRKS                                      = 0x01,
+    LXB_DOM_DOCUMENT_CMODE_LIMITED_QUIRKS                              = 0x02
+}
+
+#[repr(C)]
+pub enum lxb_dom_document_dtype_t {
+    LXB_DOM_DOCUMENT_DTYPE_UNDEF                                       = 0x00,
+    LXB_DOM_DOCUMENT_DTYPE_HTML                                        = 0x01,
+    LXB_DOM_DOCUMENT_DTYPE_XML                                         = 0x02
+}
+
+#[repr(C)]
 pub struct lxb_dom_event_target_t {
     pub events : *mut c_void;
 }
@@ -151,7 +165,31 @@ pub struct lxb_dom_attr_t {
 
 #[repr(C)]
 pub struct lxb_dom_document_t {
+    pub node : lxb_dom_node_t,
+    
+    pub compat_mode : lxb_dom_document_cmode_t,
+    pub _type : lxb_dom_document_dtype_t,
 
+    pub doctype : *mut lxb_dom_document_type_t,
+    pub element : *mut lxb_dom_element_t,
+
+    pub create_interface : lxb_dom_interface_create_f,
+    pub destroy_interface : lxb_dom_interface_destroy_f,
+
+    pub mraw : *mut core::lexbor_mraw_t,
+    pub text : *mut core::lexbor_mraw_t,
+    pub tags : *mut core::lexbor_hash_t,
+    pub attrs : *mut core::lexbor_hash_t,
+    pub prefix : *mut core::lexbor_hash_t,
+    pub ns : *mut core::lexbor_hash_t,
+
+    pub parser : *mut c_void,
+    pub user : *mut c_void,
+
+    pub tags_inherited : bool,
+    pub ns_inherited : bool,
+
+    pub scripting : bool
 }
 
 #[repr(C)]
@@ -295,4 +333,13 @@ extern "C" {
         -> *mut lxb_dom_node_t;
     pub fn lxb_dom_node_last_child_noi(node : *mut lxb_dom_node_t)
         -> *mut lxb_dom_node_t;
+
+    // lexbor/dom/interfaces/document.h
+    pub fn lxb_dom_document_interface_create(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_document_t;
+    pub fn lxb_dom_document_interface_destroy(document : 
+        *mut lxb_dom_document_t) -> *mut lxb_dom_document_t;
+    pub fn lxb_dom_document_create(owner : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_document_t;
+    
 }
