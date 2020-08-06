@@ -341,5 +341,35 @@ extern "C" {
         *mut lxb_dom_document_t) -> *mut lxb_dom_document_t;
     pub fn lxb_dom_document_create(owner : *mut lxb_dom_document_t)
         -> *mut lxb_dom_document_t;
-    
+    pub fn lxb_dom_document_init(document : *mut lxb_dom_document_t, owner :
+        *mut lxb_dom_document_t, create_interface : lxb_dom_interface_create_f,
+        destroy_interface : lxb_dom_interface_destroy_f, _type : 
+        lxb_dom_document_dtype_t, ns : c_uint) -> core::lxb_status_t;
+    pub fn lxb_dom_document_clean(document : *mut lxb_dom_document_t)
+        -> core::lxb_status_t;
+    pub fn lxb_dom_document_destroy(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_document_t;
+    pub fn lxb_dom_document_attach_doctype(document : *mut lxb_dom_document_t,
+        doctype : *mut lxb_dom_document_type_t) -> ();
+    pub fn lxb_dom_document_attach_element(document : *mut lxb_dom_document_t,
+        element : *mut lxb_dom_element_t) -> ();
+    pub fn lxb_dom_document_create_element(document : *mut lxb_dom_document_t,
+        local_name : *const core::lxb_char_t, lname_len : c_uint,
+        reserved_for_opt : *mut c_void) -> *mut lxb_dom_element_t;
+    pub fn lxb_dom_document_destroy_element(element : *mut lxb_dom_element_t)
+        -> *mut lxb_dom_element_t;
+    pub fn lxb_dom_document_create_document_fragment(document :
+        *mut lxb_dom_document_t) -> *mut lxb_dom_document_fragment_t;
+    pub fn lxb_dom_document_create_text_node(document : *mut lxb_dom_document_t,
+        data : *const core::lxb_char_t, len : c_uint) -> *mut lxb_dom_text_t;
+    pub fn lxb_dom_document_create_cdata_section(document : 
+        *mut lxb_dom_document_t, data : *const core::lxb_char_t, len : c_uint)
+        -> *mut lxb_dom_cdata_section_t;
+    pub fn lxb_dom_document_create_processing_instruction(document : 
+        *mut lxb_dom_document_t, target : *const core::lxb_char_t, target_len :
+        c_uint, data : *const core::lxb_char_t, data_len : c_uint)
+        -> *mut lxb_dom_processing_instruction_t;
+    pub fn lxb_dom_document_create_comment(document : *mut lxb_dom_document_t,
+        data : *const core::lxb_char_t, len : c_uint) 
+        -> *mut lxb_dom_comment_t;
 }
