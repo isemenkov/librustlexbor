@@ -97,7 +97,7 @@ pub enum lxb_dom_attr_id_enum_t {
 }
 
 #[repr(C)]
-pub struct lxb_dom_node_type_t {
+pub enum lxb_dom_node_type_t {
     LXB_DOM_NODE_TYPE_UNDEF                                            = 0x00,
     LXB_DOM_NODE_TYPE_ELEMENT                                          = 0x01,
     LXB_DOM_NODE_TYPE_ATTRIBUTE                                        = 0x02,
@@ -134,6 +134,12 @@ pub enum lxb_dom_element_custom_state_t {
     LXB_DOM_ELEMENT_CUSTOM_STATE_FAILED                                = 0x01,
     LXB_DOM_ELEMENT_CUSTOM_STATE_UNCUSTOMIZED                          = 0x02,
     LXB_DOM_ELEMENT_CUSTOM_STATE_CUSTOM                                = 0x03
+}
+
+#[repr(C)]
+pub enum lxb_dom_shadow_root_mode_t {
+    LXB_DOM_SHADOW_ROOT_MODE_OPEN                                      = 0x00,
+    LXB_DOM_SHADOW_ROOT_MODE_CLOSED                                    = 0x01
 }
 
 #[repr(C)]
@@ -244,7 +250,10 @@ pub struct lxb_dom_document_fragment_t {
 
 #[repr(C)]
 pub struct lxb_dom_shadow_root_t {
+    pub document_fragment : lxb_dom_document_fragment_t,
 
+    pub mode : lxb_dom_shadow_root_mode_t,
+    pub host : *mut lxb_dom_element_t
 }
 
 #[repr(C)]
@@ -266,7 +275,8 @@ pub struct lxb_dom_cdata_section_t {
 
 #[repr(C)]
 pub struct lxb_dom_processing_instruction_t {
-
+    pub char_data : lxb_dom_character_data_t,
+    pub target : core::lexbor_str_t
 }
 
 #[repr(C)]
@@ -537,12 +547,97 @@ extern "C" {
         -> core::lxb_status_t;
     pub fn lxb_dom_element_has_attribute(element : *mut lxb_dom_element_t,
         qualified_name : *const core::lxb_char_t, qn_len : c_uint) -> bool;
-    pub fn lxb_dom_element_attr_append(element : *mut lxb_dom_element_t, attr :
+    pub fn lxb_dom_elemen_attr_append(element : *mut lxb_dom_element_t, attr :
         *mut lxb_dom_attr_t) -> core::lxb_status_t;
     pub fn lxb_dom_element_attr_remove(element : *mut lxb_dom_element_t, attr :
         *mut lxb_dom_attr_t) -> core::lxb_status_t;
     pub fn lxb_dom_element_attr_by_name(element : *mut lxb_dom_element_t,
         qualified_name : *const core::lxb_char_t, length : c_uint)
         -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_attr_by_local_name_data(element : 
+        *mut lxb_dom_element_t, data : *const lxb_dom_attr_data_t)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_attr_by_id(element : *mut lxb_dom_element_t, 
+        attr_id : lxb_dom_attr_id_t) -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_attr_by_data(element : *mut lxb_dom_element_t, data :
+        *const lxb_dom_attr_data_t) -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_compare(first : *mut lxb_dom_element_t, second :
+        *mut lxb_dom_element_t) -> bool;
+    pub fn lxb_dom_element_attr_is_exists(element : *mut lxb_dom_element_t,
+        qualified_name : *const core::lxb_char_t, length : c_uint)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_is_set(element : *mut lxb_dom_element_t, is :
+        *const core::lxb_char_t, is_len : c_uint) -> core::lxb_status_t;
+    pub fn lxb_dom_elements_by_tag_name(root : *mut lxb_dom_element_t,
+        collection : *mut lxb_dom_collection_t, qualified_name : 
+        *const core::lxb_char_t, len : c_uint) -> core::lxb_status_t;
+    pub fn lxb_dom_elements_by_class_name(root : *mut lxb_dom_element_t,
+        collection : *mut lxb_dom_collection_t, class_name : 
+        *const core::lxb_char_t, len : c_uint) -> core::lxb_status_t;
+    pub fn lxb_dom_elements_by_attr(root : *mut lxb_dom_element_t,
+        collection : *mut lxb_dom_collection_t, qualified_name : 
+        *const core::lxb_char_t, qname_len : c_uint, value : 
+        *const core::lxb_char_t, value_len : c_uint, case_insensitive : bool)
+        -> core::lxb_status_t;
+    pub fn lxb_dom_elements_by_attr_begin(root : *mut lxb_dom_element_t,
+        collection : *mut lxb_dom_collection_t, qualified_name :
+        *const core::lxb_char_t, qname_len : c_uint, value : 
+        *const core::lxb_char_t, value_len : c_uint, case_insensitive : bool)
+        -> core::lxb_status_t;
+    pub fn lxb_dom_elements_by_attr_end(root : *mut lxb_dom_element_t,
+        collection : *mut lxb_dom_collection_t, qualified_name :
+        *const core::lxb_char_t, qname_len : c_uint, value : 
+        *const core::lxb_char_t, value_len : c_uint, case_insensitive : bool)
+        -> core::lxb_status_t;
+    pub fn lxb_dom_elements_by_attr_contain(root : *mut lxb_dom_element_t,
+        collection : *mut lxb_dom_collection_t, qualified_name :
+        *const core::lxb_char_t, qname_len : c_uint, value : 
+        *const core::lxb_char_t, value_len : c_uint, case_insensitive : bool)
+        -> core::lxb_status_t;
+    pub fn lxb_dom_element_qualified_name(element : *mut lxb_dom_element_t,
+        len : *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_element_qualified_name_upper(element : 
+        *mut lxb_dom_element_t, len : *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_element_local_name(element : *mut lxb_dom_element_t, len : 
+        *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_element_prefix(element : *mut lxb_dom_element_t, len : 
+        *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_element_tag_name(element : *mut lxb_dom_element_t, len : 
+        *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_element_id_noi(element : *mut lxb_dom_element_t, len :
+        *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_element_class_noi(element : *mut lxb_dom_element_t, len :
+        *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_element_is_custom_noi(element : *mut lxb_dom_element_t)
+        -> bool;
+    pub fn lxb_dom_element_custom_is_defined_noi(element : 
+        *mut lxb_dom_element_t) -> bool;
+    pub fn lxb_dom_element_first_attribute_noi(element : *mut lxb_dom_element_t)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_next_attribute_noi(attr : *mut lxb_dom_attr_t)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_prev_attribute_noi(attr : *mut lxb_dom_attr_t)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_last_attribute_noi(element : *mut lxb_dom_element_t)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_id_attribute_noi(element : *mut lxb_dom_element_t)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_class_attribute_noi(element : *mut lxb_dom_element_t)
+        -> *mut lxb_dom_attr_t;
+
+    // lexbor/dom/interfaces/processing_instruction.h
+    pub fn lxb_dom_processing_instruction_interface_create(document :
+        *mut lxb_dom_document_t) -> *mut lxb_dom_processing_instruction_t;
+    pub fn lxb_dom_processing_instruction_interface_destroy(
+        processing_instruction : *mut lxb_dom_processing_instruction_t)
+        -> *mut lxb_dom_processing_instruction_t;
+    pub fn lxb_dom_processing_instruction_target_noi(pi :
+        *mut lxb_dom_processing_instruction_t, len : *mut c_uint)
+        -> *const core::lxb_char_t;
     
+    // lexbor/dom/interfaces/shadow_root.h
+    pub fn lxb_dom_shadow_root_interface_create(document : 
+        *mut lxb_dom_element_t) -> *mut lxb_dom_shadow_root_t;
+    pub fn lxb_dom_shadow_root_interface_destroy(shadow_root : 
+        *mut lxb_dom_shadow_root_t) -> *mut lxb_dom_shadow_root_t;
 }
