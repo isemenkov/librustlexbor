@@ -31,8 +31,8 @@
 #![allow(non_camel_case_types)]
 
 #[path="core.rs"] pub mod core;
-pub mod ns;
-pub mod tag;
+#[path="ns.rs"] pub mod ns;
+#[path="tag.rs"] pub mod tag;
 extern crate libc;
 
 use libc::{c_uint};
@@ -129,8 +129,16 @@ pub enum lxb_dom_document_dtype_t {
 }
 
 #[repr(C)]
+pub enum lxb_dom_element_custom_state_t {
+    LXB_DOM_ELEMENT_CUSTOM_STATE_UNDEFINED                             = 0x00,
+    LXB_DOM_ELEMENT_CUSTOM_STATE_FAILED                                = 0x01,
+    LXB_DOM_ELEMENT_CUSTOM_STATE_UNCUSTOMIZED                          = 0x02,
+    LXB_DOM_ELEMENT_CUSTOM_STATE_CUSTOM                                = 0x03
+}
+
+#[repr(C)]
 pub struct lxb_dom_event_target_t {
-    pub events : *mut c_void;
+    pub events : *mut c_void
 }
 
 #[repr(C)]
@@ -155,12 +163,38 @@ pub struct lxb_dom_node_t {
 
 #[repr(C)]
 pub struct lxb_dom_element_t {
+    pub node : lxb_dom_node_t,
+    pub upper_name : lxb_dom_attr_id_t,
+    pub qualified_name : lxb_dom_attr_id_t,
+    pub is_value : *mut core::lexbor_str_t,
+    pub first_attr : lxb_dom_attr_t,
+    pub last_attr : lxb_dom_attr_t,
+    pub attr_id : lxb_dom_attr_t,
+    pub attr_class : lxb_dom_attr_t,
+    pub custom_state : lxb_dom_element_custom_state_t
+}
 
+#[repr(C)]
+pub struct lxb_dom_attr_data_t {
+    pub entry : core::lexbor_hash_entry_t,
+    pub attr_id : lxb_dom_attr_id_t,
+    pub ref_count : c_uint,
+    pub read_only : bool
 }
 
 #[repr(C)]
 pub struct lxb_dom_attr_t {
+    pub node : lxb_dom_node_t,
 
+    pub upper_name : lxb_dom_attr_id_t,
+    pub qualified_name : lxb_dom_attr_id_t,
+
+    pub value : *mut core::lexbor_str_t,
+
+    pub owner : *mut lxb_dom_element_t,
+
+    pub next : *mut lxb_dom_attr_t,
+    pub prev : *mut lxb_dom_attr_t
 }
 
 #[repr(C)]
@@ -194,12 +228,18 @@ pub struct lxb_dom_document_t {
 
 #[repr(C)]
 pub struct lxb_dom_document_type_t {
+    pub node : lxb_dom_node_t,
 
+    pub name : core::lexbor_str_t,
+    pub public_id : core::lexbor_str_t,
+    pub system_id : core::lexbor_str_t
 }
 
 #[repr(C)]
 pub struct lxb_dom_document_fragment_t {
+    pub node : lxb_dom_node_t,
 
+    pub host : *mut lxb_dom_element_t
 }
 
 #[repr(C)]
@@ -209,17 +249,19 @@ pub struct lxb_dom_shadow_root_t {
 
 #[repr(C)]
 pub struct lxb_dom_character_data_t {
+    pub node : lxb_dom_node_t,
 
+    pub data : core::lexbor_str_t
 }
 
 #[repr(C)]
 pub struct lxb_dom_text_t {
-
+    pub char_data : lxb_dom_character_data_t
 }
 
 #[repr(C)]
 pub struct lxb_dom_cdata_section_t {
-
+    pub text : lxb_dom_text_t
 }
 
 #[repr(C)]
@@ -229,7 +271,7 @@ pub struct lxb_dom_processing_instruction_t {
 
 #[repr(C)]
 pub struct lxb_dom_comment_t {
-
+    pub char_data : lxb_dom_character_data_t
 }
 
 #[repr(C)]
@@ -372,4 +414,135 @@ extern "C" {
     pub fn lxb_dom_document_create_comment(document : *mut lxb_dom_document_t,
         data : *const core::lxb_char_t, len : c_uint) 
         -> *mut lxb_dom_comment_t;
+    pub fn lxb_dom_document_create_interface_noi(document : 
+        *mut lxb_dom_document_t, tag_id : tag::lxb_tag_id_t, _ns : 
+        ns::lxb_ns_id_t) -> *mut lxb_dom_interface_t;
+    pub fn lxb_dom_document_destroy_interface_noi(intrfc :
+        *mut lxb_dom_interface_t) -> *mut lxb_dom_interface_t;
+    pub fn lxb_dom_document_create_struct_noi(document : 
+        *mut lxb_dom_document_t, struct_size : c_uint) -> *mut c_void;
+    pub fn lxb_dom_document_destroy_struct_noi(document : 
+        *mut lxb_dom_document_t, structure : *mut c_void) -> *mut c_void;
+    pub fn lxb_dom_document_create_text_noi(document : *mut lxb_dom_document_t,
+        len : c_uint) -> *mut core::lxb_char_t;
+    pub fn lxb_dom_document_destroy_text_noi(document : *mut lxb_dom_document_t,
+        text : *mut core::lxb_char_t) -> *mut c_void;
+    pub fn lxb_dom_document_element_noi(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_element_t;
+
+    // lexbor/dom/interfaces/document_type.h
+    pub fn lxb_dom_document_type_interface_create(document : 
+        *mut lxb_dom_document_t) -> *mut lxb_dom_document_type_t;
+    pub fn lxb_dom_document_type_interface_destroy(document_type : 
+        *mut lxb_dom_document_type_t) -> *mut lxb_dom_document_type_t;
+    pub fn lxb_dom_document_type_name_noi(doc_type : 
+        *mut lxb_dom_document_type_t, len : *mut c_uint) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_dom_document_type_public_id_noi(doc_type :
+        *mut lxb_dom_document_type_t, len : *mut c_uint) 
+        -> *const core::lxb_char_t;
+    pub fn lxb_dom_document_type_system_id_noi(doc_type :
+        *mut lxb_dom_document_type_t, len : *mut c_uint)
+        -> *const core::lxb_char_t;
+
+    // lexbor/dom/interfaces/attr.h
+    pub fn lxb_dom_attr_interface_create(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_attr_interface_destroy(attr : *mut lxb_dom_attr_t)
+        -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_attr_set_name(attr : *mut lxb_dom_attr_t, local_name :
+        *const core::lxb_char_t, local_name_len : c_uint, to_lowercase : bool)
+        -> core::lxb_status_t;
+    pub fn lxb_dom_attr_set_value(attr : *mut lxb_dom_attr_t, value : 
+        *const core::lxb_char_t, value_len : c_uint) -> core::lxb_status_t;
+    pub fn lxb_dom_attr_set_value_wo_copy(attr : *mut lxb_dom_attr_t, value :
+        *mut core::lxb_char_t, value_len : c_uint) -> core::lxb_status_t;
+    pub fn lxb_dom_attr_set_existing_value(attr : *mut lxb_dom_attr_t, value :
+        *const core::lxb_char_t, value_len : c_uint) -> core::lxb_status_t;
+    pub fn lxb_dom_attr_clone_name_value(attr_from : *mut lxb_dom_attr_t,
+        attr_to : *mut lxb_dom_attr_t) -> core::lxb_status_t;
+    pub fn lxb_dom_attr_compare(first : *mut lxb_dom_attr_t, second :
+        *mut lxb_dom_attr_t) -> bool;
+    pub fn lxb_dom_attr_data_by_id(hash : *mut core::lexbor_hash_t, attr_id :
+        lxb_dom_attr_id_t) -> *mut lxb_dom_attr_data_t;
+    pub fn lxb_dom_attr_data_by_local_name(hash : *mut core::lexbor_hash_t,
+        name : *const core::lxb_char_t, length : c_uint) 
+        -> *const lxb_dom_attr_data_t;
+    pub fn lxb_dom_attr_data_by_qualified_name(hash : core::lexbor_hash_t,
+        name : *const core::lxb_char_t, length : c_uint)
+        -> *const lxb_dom_attr_data_t;
+    pub fn lxb_dom_attr_qualified_name(attr : *mut lxb_dom_attr_t, len :
+        *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_attr_local_name_noi(attr : *mut lxb_dom_attr_t, len : c_uint)
+        -> *const core::lxb_char_t;
+    pub fn lxb_dom_attr_value_noi(attr : *mut lxb_dom_attr_t, len : *mut c_uint)
+        -> *const core::lxb_char_t;
+
+    // lexbor/dom/interfaces/character_data.h
+    pub fn lxb_dom_character_data_interface_create(document : 
+        *mut lxb_dom_document_t) -> *mut lxb_dom_character_data_t;
+    pub fn lxb_dom_character_data_interface_destroy(character_data : 
+        *mut lxb_dom_character_data_t) -> *mut lxb_dom_character_data_t;
+    pub fn lxb_dom_character_data_replace(ch_data : 
+        *mut lxb_dom_character_data_t, data : *const core::lxb_char_t, len :
+        c_uint, offset : c_uint, count : c_uint) -> core::lxb_status_t;
+    
+    // lexbor/dom/interfaces/text.h
+    pub fn lxb_dom_text_interface_create(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_text_t;
+    pub fn lxb_dom_text_interface_destroy(text : *mut lxb_dom_text_t)
+        -> *mut lxb_dom_text_t;
+
+    // lexbor/dom/interfaces/cdata_section.h
+    pub fn lxb_dom_cdata_section_interface_create(document : 
+        *mut lxb_dom_document_t) -> *mut lxb_dom_cdata_section_t;
+    pub fn lxb_dom_cdata_section_interface_destroy(cdata_section :
+        *mut lxb_dom_cdata_section_t) -> *mut lxb_dom_cdata_section_t;
+
+    // lexbor/dom/interfaces/comment.h
+    pub fn lxb_dom_comment_interface_create(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_comment_t;
+    pub fn lxb_dom_comment_interface_destroy(comment : *mut lxb_dom_comment_t)
+        -> *mut lxb_dom_comment_t;
+
+    // lexbor/dom/interfaces/document_fragment.h
+    pub fn lxb_dom_document_fragment_interface_create(document : 
+        *mut lxb_dom_document_t) -> *mut lxb_dom_document_fragment_t;
+    pub fn lxb_dom_document_fragment_interface_destroy(document_fragment :
+        *mut lxb_dom_document_fragment_t) -> *mut lxb_dom_document_fragment_t;
+
+    // lexbor/dom/interfaces/element.h
+    pub fn lxb_dom_element_interface_create(document : *mut lxb_dom_document_t)
+        -> *mut lxb_dom_element_t;
+    pub fn lxb_dom_element_interface_destroy(element : *mut lxb_dom_element_t)
+        -> *mut lxb_dom_element_t;
+    pub fn lxb_dom_element_create(document : *mut lxb_dom_document_t, 
+        local_name : *const core::lxb_char_t, lname_len : c_uint, ns_name :
+        *const core::lxb_char_t, ns_len : c_uint, prefix : 
+        *const core::lxb_char_t, prefix_len : c_uint, is : 
+        *const core::lxb_char_t, is_len : c_uint, sync_custom : bool)
+        -> *mut lxb_dom_element_t;
+    pub fn lxb_dom_element_destroy(element : *mut lxb_dom_element_t)
+        -> *mut lxb_dom_element_t;
+    pub fn lxb_dom_element_has_attributes(element : *mut lxb_dom_element_t)
+        -> bool;
+    pub fn lxb_dom_element_set_attribute(element : *mut lxb_dom_element_t,
+        qualified_name : *const core::lxb_char_t, qn_len : c_uint, value :
+        *const core::lxb_char_t, value_len : c_uint) -> *mut lxb_dom_attr_t;
+    pub fn lxb_dom_element_get_attribute(element : *mut lxb_dom_element_t,
+        qualified_name : *const core::lxb_char_t, qn_len : c_uint, value_len :
+        *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_dom_element_remove_attribute(element : *mut lxb_dom_element_t,
+        qualified_name : *const core::lxb_char_t, qn_len : c_uint)
+        -> core::lxb_status_t;
+    pub fn lxb_dom_element_has_attribute(element : *mut lxb_dom_element_t,
+        qualified_name : *const core::lxb_char_t, qn_len : c_uint) -> bool;
+    pub fn lxb_dom_element_attr_append(element : *mut lxb_dom_element_t, attr :
+        *mut lxb_dom_attr_t) -> core::lxb_status_t;
+    pub fn lxb_dom_element_attr_remove(element : *mut lxb_dom_element_t, attr :
+        *mut lxb_dom_attr_t) -> core::lxb_status_t;
+    pub fn lxb_dom_element_attr_by_name(element : *mut lxb_dom_element_t,
+        qualified_name : *const core::lxb_char_t, length : c_uint)
+        -> *mut lxb_dom_attr_t;
+    
 }

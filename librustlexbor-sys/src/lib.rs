@@ -34,3 +34,4 @@ pub mod ns;
 pub mod tag;
 pub mod encoding;
 pub mod css;
+pub mod dom;
