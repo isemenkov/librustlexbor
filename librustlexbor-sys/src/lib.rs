@@ -35,3 +35,4 @@ pub mod tag;
 pub mod encoding;
 pub mod css;
 pub mod dom;
+pub mod html;

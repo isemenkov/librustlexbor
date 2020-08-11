@@ -32,6 +32,8 @@
 
 #[path="core.rs"] pub mod core;
 #[path="tag.rs"] pub mod tag;
+#[path="ns.rs"] pub mod ns;
+#[path="dom.rs"] pub mod dom;
 extern crate libc;
 
 use libc::{c_uint};
@@ -89,6 +91,336 @@ pub struct lxb_html_body_element_t {
     
 }
 
+#[repr(C)]
+pub struct lxb_html_button_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_canvas_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_d_list_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_data_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_data_list_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_details_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_dialog_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_directory_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_div_element_t {
+
+}
+
+#[repr(C)]
+pub struct lxb_html_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_embed_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_field_set_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_font_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_form_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_frame_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_frame_set_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_hr_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_head_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_heading_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_html_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_iframe_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_image_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_input_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_li_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_label_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_legend_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_link_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_map_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_marquee_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_media_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_menu_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_meta_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_meter_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_mod_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_o_list_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_object_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_opt_group_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_option_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_output_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_paragraph_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_param_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_picture_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_pre_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_progress_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_quore_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_script_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_select_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_slot_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_source_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_span_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_style_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_table_caption_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_table_cell_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_table_col__element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_table_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_table_row_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_table_section_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_template_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_text_area_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_time_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_title_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_track_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_u_list_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_unknown_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_video_element_t {
+    
+}
+
+#[repr(C)]
+pub struct lxb_html_window_t {
+    
+}
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/html/encoding.h
@@ -124,4 +456,10 @@ extern "C" {
         *const core::lxb_char_t, end : *const core::lxb_char_t, data :
         *const core::lxb_char_t, len : c_uint) -> bool;
     
+    // lexbor/html/interface.h
+    pub fn lxb_html_interface_create(document : *mut lxb_html_document_t, 
+        tag_id : tag::lxb_tag_id_t, _ns : ns::lxb_ns_id_t)
+        -> *mut dom::lxb_dom_interface_t;
+    pub fn lxb_html_interface_destroy(intrfc : *mut dom::lxb_dom_interface_t)
+        -> *mut dom::lxb_dom_interface_t;
 }
