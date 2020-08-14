@@ -36,12 +36,27 @@
 #[path="dom.rs"] pub mod dom;
 extern crate libc;
 
-use libc::{c_uint};
+use libc::{c_int, c_uint};
 use std::os::raw::c_void;
+
+pub type lxb_html_tag_category_t = c_int;
 
 #[repr(C)]
 pub enum lxb_html_status_t {
     LXB_HTML_STATUS_OK                                                 = 0x0000
+}
+
+#[repr(C)]
+pub enum lxb_html_tag_category {
+    LXB_HTML_TAG_CATEGORY__UNDEF                                       = 0x0000,
+    LXB_HTML_TAG_CATEGORY_ORDINARY                                     = 0x0001,
+    LXB_HTML_TAG_CATEGORY_SPECIAL                                      = 0x0002,
+    LXB_HTML_TAG_CATEGORY_FORMATTING                                   = 0x0004,
+    LXB_HTML_TAG_CATEGORY_SCOPE                                        = 0x0008,
+    LXB_HTML_TAG_CATEGORY_SCOPE_LIST_ITEM                              = 0x0010,
+    LXB_HTML_TAG_CATEGORY_SCOPE_BUTTON                                 = 0x0020,
+    LXB_HTML_TAG_CATEGORY_SCOPE_TABLE                                  = 0x0040,
+    LXB_HTML_TAG_CATEGORY_SCOPE_SELECT                                 = 0x0080
 }
 
 #[repr(C)]
@@ -421,6 +436,12 @@ pub struct lxb_html_window_t {
     
 }
 
+#[repr(C)]
+pub struct lxb_html_tag_fixname_t {
+    pub name : *const core::lxb_char_t,
+    pub len : c_uint
+}
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/html/encoding.h
@@ -462,4 +483,8 @@ extern "C" {
         -> *mut dom::lxb_dom_interface_t;
     pub fn lxb_html_interface_destroy(intrfc : *mut dom::lxb_dom_interface_t)
         -> *mut dom::lxb_dom_interface_t;
+
+    // lexbor/html/node.h
+    pub fn lxb_html_node_is_void_noi(node : dom::lxb_dom_node_t) -> bool;
+
 }
