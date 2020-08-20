@@ -36,10 +36,15 @@
 #[path="dom.rs"] pub mod dom;
 extern crate libc;
 
-use libc::{c_int, c_uint};
+use libc::{c_int, c_uint, c_ulong};
 use std::os::raw::c_void;
 
 pub type lxb_html_tag_category_t = c_int;
+
+#[repr(C)]
+pub struct lxb_html_tree_t {
+
+}
 
 #[repr(C)]
 pub enum lxb_html_status_t {
@@ -442,6 +447,43 @@ pub struct lxb_html_tag_fixname_t {
     pub len : c_uint
 }
 
+#[repr(C)]
+pub union U {
+    pub len : c_uint,
+    pub num : c_ulong
+}
+
+#[repr(C)]
+pub struct lxb_html_parser_char_t {
+    /* It is necessary to initialize before use */
+    pub state : lxb_html_parser_char_state_f,
+    pub mraw : *mut core::lexbor_mraw_t,
+
+    pub replace_null : bool,
+    pub drop_null : bool,
+    pub is_attribute : bool,
+
+    /* Do not change out! Internal variables! */
+    pub tmp : U,
+    
+    pub status : core::lxb_status_t,
+    pub is_eof : bool,
+
+    /* Parse error */
+    pub parse_errors : *mut core::lexbor_array_obj_t,
+
+    /* Entities */
+    pub entity : *const core::lexbor_sbst_entry_static_t,
+    pub entity_match : *const core::lexbor_sbst_entry_static_t,
+    pub entity_begin : *const core::lxb_char_t,
+    pub entity_str_len : c_uint
+}
+
+pub type lxb_html_parser_char_state_f = extern "C" fn(pc : 
+    *mut lxb_html_parser_char_t, _str : *mut core::lexbor_str_t, data :
+    *const core::lxb_char_t, end : *const core::lxb_char_t) 
+    -> *const core::lxb_char_t; 
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/html/encoding.h
@@ -487,4 +529,13 @@ extern "C" {
     // lexbor/html/node.h
     pub fn lxb_html_node_is_void_noi(node : dom::lxb_dom_node_t) -> bool;
 
+    // lexbor/html/parser_char.h
+    pub fn lxb_html_parser_char_process(pc : *mut lxb_html_parser_char_t, _str :
+        *mut core::lexbor_str_t, in_node : *const core::lexbor_in_node_t,
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_parser_char_copy(_str : *mut core::lexbor_str_t, mraw :
+        *mut core::lexbor_mraw_t, in_node : *const core::lexbor_in_node_t,
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+        -> core::lxb_status_t;
 }
