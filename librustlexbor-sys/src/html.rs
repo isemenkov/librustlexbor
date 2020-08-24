@@ -36,7 +36,7 @@
 #[path="dom.rs"] pub mod dom;
 extern crate libc;
 
-use libc::{c_int, c_uint, c_ulong};
+use libc::{c_int, c_uint, c_ulong, uintptr_t};
 use std::os::raw::c_void;
 
 pub type lxb_html_tag_category_t = c_int;
@@ -62,6 +62,22 @@ pub enum lxb_html_tag_category {
     LXB_HTML_TAG_CATEGORY_SCOPE_BUTTON                                 = 0x0020,
     LXB_HTML_TAG_CATEGORY_SCOPE_TABLE                                  = 0x0040,
     LXB_HTML_TAG_CATEGORY_SCOPE_SELECT                                 = 0x0080
+}
+
+#[repr(C)]
+pub enum lxb_html_token_type_t {
+    LXB_HTML_TOKEN_TYPE_OPEN                                           = 0x0000,
+    LXB_HTML_TOKEN_TYPE_CLOSE                                          = 0x0001,
+    LXB_HTML_TOKEN_TYPE_CLOSE_SELF                                     = 0x0002,
+    LXB_HTML_TOKEN_TYPE_FORCE_QUIRKS                                   = 0x0004,
+    LXB_HTML_TOKEN_TYPE_DONE                                           = 0x0008
+}
+
+#[repr(C)]
+pub enum lxb_html_token_attr_type_t {
+    LXB_HTML_TOKEN_ATTR_TYPE_UNDEF                                     = 0x0000,
+    LXB_HTML_TOKEN_ATTR_TYPE_NAME_NULL                                 = 0x0001,
+    LXB_HTML_TOKEN_ATTR_TYPE_VALUE_NULL                                = 0x0002
 }
 
 #[repr(C)]
@@ -484,6 +500,117 @@ pub type lxb_html_parser_char_state_f = extern "C" fn(pc :
     *const core::lxb_char_t, end : *const core::lxb_char_t) 
     -> *const core::lxb_char_t; 
 
+#[repr(C)]
+pub struct lxb_html_token_attr_t {
+    pub name_begin : *const core::lxb_char_t,
+    pub name_end : *const core::lxb_char_t,
+
+    pub value_begin : *const core::lxb_char_t,
+    pub value_end : *const core::lxb_char_t,
+
+    pub name : *const dom::lxb_dom_attr_data_t,
+    pub value : *mut core::lxb_char_t,
+    pub value_size : c_uint,
+
+    pub in_name : *mut core::lexbor_in_node_t,
+    pub in_value : *mut core::lexbor_in_node_t,
+
+    pub next : *mut lxb_html_token_attr_t,
+    pub prev : *mut lxb_html_token_attr_t,
+
+    pub type_ : lxb_html_token_attr_type_t
+}
+
+#[repr(C)]
+pub struct lxb_html_token_t {
+    pub begin : *const core::lxb_char_t,
+    pub end : *const core::lxb_char_t,
+
+    pub text_start : *const core::lxb_char_t,
+    pub text_end : *const core::lxb_char_t,
+
+    pub in_begin : *mut core::lexbor_in_node_t,
+
+    pub attr_first : *mut lxb_html_token_attr_t,
+    pub attr_last : *mut lxb_html_token_attr_t,
+
+    pub base_element : *mut c_void,
+
+    pub null_count : c_uint,
+    pub tag_id : tag::lxb_tag_id_t,
+    pub type_ : lxb_html_token_type_t
+}
+
+#[repr(C)]
+pub struct lxb_html_tokenizer_t {
+    pub state : lxb_html_tokenizer_state_f,
+    pub state_return : lxb_html_tokenizer_state_f,
+
+    pub callback_token_done : lxb_html_tokenizer_token_f,
+    pub callback_token_ctx : *mut c_void,
+
+    pub tags : *mut core::lexbor_hash_t,
+    pub attr : *mut core::lexbor_hash_t,
+    pub attrs_mraw : *mut core::lexbor_mraw_t,
+
+    /* For a temp strings and other templary data */
+    pub mraw : *mut core::lexbor_mraw_t,
+
+    /* Current process token */
+    pub token : *mut lxb_html_token_t,
+
+    /* Memory for token and attr */
+    pub dobj_token : *mut core::lexbor_dobject_t,
+    pub dobj_token_attr : *mut core::lexbor_dobject_t,
+
+    /* Parse error */
+    pub parse_errors : *mut core::lexbor_array_obj_t,
+
+    /*
+     * Leak abstractions.
+     * The only place where the specification causes mixing Tree Builder
+     * and Tokenizer. We kill all beauty.
+     * Current Tree parser. This is not ref (not ref count).
+     */
+    pub tree : *mut lxb_html_tree_t,
+
+    /* Temp */
+    pub markup : *const core::lxb_char_t,
+    pub temp : *const core::lxb_char_t,
+    pub tmp_tag_id : tag::lxb_tag_id_t,
+
+    pub start : *mut core::lxb_char_t,
+    pub pos : *mut core::lxb_char_t,
+    pub end : *const core::lxb_char_t,
+    pub begin : *const core::lxb_char_t,
+    pub last : *const core::lxb_char_t,
+
+    /* Entities */
+    pub entity : *const core::lexbor_sbst_entry_static_t,
+    pub entity_match : *const core::lexbor_sbst_entry_static_t,
+    pub entity_start : uintptr_t,
+    pub entity_end : uintptr_t,
+    pub entity_length : u32,
+    pub entity_number : u32,
+    pub is_attribute : bool,
+
+    /* Process */
+    pub opt : lxb_html_tokenizer_opt_t,
+    pub status : core::lexbor_status_t,
+    pub is_eof : bool,
+
+    pub base : *mut lxb_html_tokenizer_t,
+    pub ref_count : c_uint
+}
+
+pub type lxb_html_tokenizer_state_f = extern "C" fn(tkz : 
+    *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end : 
+    *const core::lxb_char_t) -> *const core::lxb_char_t;
+
+pub type lxb_html_tokenizer_token_f = extern "C" fn(tkz : 
+    *mut lxb_html_tokenizer_t, token : *mut lxb_html_token_t, ctx : *mut c_void)
+    -> *mut lxb_html_token_t;
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/html/encoding.h
@@ -528,14 +655,102 @@ extern "C" {
 
     // lexbor/html/node.h
     pub fn lxb_html_node_is_void_noi(node : dom::lxb_dom_node_t) -> bool;
+    
+    // lexbor/html/token_attr.h
+    pub fn lxb_html_token_attr_create(dobj : *mut core::lexbor_dobject_t)
+        -> *mut lxb_html_token_attr_t;
+    pub fn lxb_html_token_attr_clean(attr : *mut lxb_html_token_attr_t) -> ();
+    pub fn lxb_html_token_attr_destroy(attr : *mut lxb_html_token_attr_t,
+        dobj : *mut core::lexbor_dobject_t) -> *mut lxb_html_token_attr_t;
+    pub fn lxb_html_token_attr_name(attr : *mut lxb_html_token_attr_t, length :
+        *mut c_uint) -> *const core::lxb_char_t;
 
-    // lexbor/html/parser_char.h
-    pub fn lxb_html_parser_char_process(pc : *mut lxb_html_parser_char_t, _str :
-        *mut core::lexbor_str_t, in_node : *const core::lexbor_in_node_t,
-        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+    // lexbor/html/token.h
+    pub fn lxb_html_token_create(dobj : *mut core::lexbor_dobject_t)
+        -> *mut lxb_html_token_t;
+    pub fn lxb_html_token_destroy(token : *mut lxb_html_token_t, dobj : 
+        *mut core::lexbor_dobject_t) -> *mut lxb_html_token_t;
+    pub fn lxb_html_token_attr_append(token : *mut lxb_html_token_t, dobj :
+        *mut core::lexbor_dobject_t) -> *mut lxb_html_token_attr_t;
+    pub fn lxb_html_token_attr_remove(token : *mut lxb_html_token_t, attr :
+        *mut lxb_html_token_attr_t) -> ();
+    pub fn lxb_html_token_attr_delete(token : *mut lxb_html_token_t, attr :
+        *mut lxb_html_token_attr_t, dobj : core::lexbor_dobject_t) -> ();
+    pub fn lxb_html_token_make_text(token : *mut lxb_html_token_t, str_ :
+        *mut core::lexbor_str_t, mraw : *mut core::lexbor_mraw_t) 
         -> core::lxb_status_t;
-    pub fn lxb_html_parser_char_copy(_str : *mut core::lexbor_str_t, mraw :
-        *mut core::lexbor_mraw_t, in_node : *const core::lexbor_in_node_t,
-        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+    pub fn lxb_html_token_make_text_drop_null(token : *mut lxb_html_token_t,
+        str_ : *mut core::lexbor_str_t, mraw : *mut core::lexbor_mraw_t)
         -> core::lxb_status_t;
+    pub fn lxb_html_token_make_text_replace_null(token : *mut lxb_html_token_t,
+        str_ : *mut core::lexbor_str_t, mraw : *mut core::lexbor_mraw_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_token_data_skip_ws_begin(token : *mut lxb_html_token_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_token_data_skip_one_newline_begin(token : 
+        *mut lxb_html_token_t) -> core::lxb_status_t;
+    pub fn lxb_html_token_data_split_ws_begin(token : *mut lxb_html_token_t,
+        ws_token : *mut lxb_html_token_t) -> core::lxb_status_t;
+    pub fn lxb_html_token_doctype_parse(token : *mut lxb_html_token_t, 
+        doc_type : dom::lxb_dom_document_type_t) -> core::lxb_status_t;
+    pub fn lxb_html_token_find_attr(tkz : *mut lxb_html_tokenizer_t, token :
+        *mut lxb_html_token_t, name : *const core::lxb_status_t, name_len :
+        c_uint) -> *mut lxb_html_token_attr_t;
+    pub fn lxb_html_token_clean_noi(token : *mut lxb_html_token_t) -> ();
+    pub fn lxb_html_token_create_eof_noi(dobj : *mut core::lexbor_dobject_t)
+        -> *mut lxb_html_token_t;
+
+    // lexbor/html/tokenizer.h
+    pub fn lxb_html_tokenizer_create() -> *mut lxb_html_tokenizer_t;
+    pub fn lxb_html_tokenizer_init(tzk : *mut lxb_html_tokenizer_t) 
+        -> core::lexbor_status_t;
+    pub fn lxb_html_tokenizer_inherit(tkz_to : *mut lxb_html_tokenizer_t,
+        tkz_from : *mut lxb_html_tokenizer_t) -> core::lexbor_status_t;
+    pub fn lxb_html_tokenizer_ref(tkz : *mut lxb_html_tokenizer_t)
+        -> *mut lxb_html_tokenizer_t;
+    pub fn lxb_html_tokenizer_unref(tkz : *mut lxb_html_tokenizer_t)
+        -> *mut lxb_html_tokenizer_t;
+    pub fn lxb_html_tokenizer_clean(tkz : *mut lxb_html_tokenizer_t) -> ();
+    pub fn lxb_html_tokenizer_destroy(tkz : *mut lxb_html_tokenizer_t)
+        -> *mut lxb_html_tokenizer_t;
+    pub fn lxb_html_tokenizer_tags_make(tkz : *mut lxb_html_tokenizer_t,
+        table_size : c_uint) -> core::lexbor_status_t;
+    pub fn lxb_html_tokenizer_tags_destroy(tkz : *mut lxb_html_tokenizer_t)
+        -> ();
+    pub fn lxb_html_tokenizer_attrs_make(tkz : *mut lxb_html_tokenizer_t,
+        table_size : c_uint) -> core::lexbor_status_t;
+    pub fn lxb_html_tokenizer_attrs_destroy(tkz : *mut lxb_html_tokenizer_t)
+        -> ();
+    pub fn lxb_html_tokenizer_begin(tkz : *mut lxb_html_tokenizer_t)
+        -> core::lexbor_status_t;
+    pub fn lxb_html_tokenizer_chunk(tkz : *mut lxb_html_tokenizer_t, data :
+        *const core::lxb_char_t, size : c_uint) -> core::lexbor_status_t;
+    pub fn lxb_html_tokenizer_end(tkz : *mut lxb_html_tokenizer_t)
+        -> core::lexbor_status_t;
+    pub fn lxb_html_tokenizer_change_incoming(tkz : *mut lxb_html_tokenizer_t,
+        pos : *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_html_tokenizer_current_namespace(tkz : *mut lxb_html_tokenizer_t)
+        -> ns::lxb_ns_id_t;
+    pub fn lxb_html_tokenizer_set_state_by_tag(tkz : *mut lxb_html_tokenizer_t,
+        scripting : bool, tag_id : tag::lxb_tag_id_t, ns_ : ns::lxb_ns_id_t)
+        -> ();
+    pub fn lxb_html_tokenizer_status_set_noi(tkz : *mut lxb_html_tokenizer_t,
+        status : core::lxb_status_t) -> ();
+    pub fn lxb_html_tokenizer_callback_token_done_set_noi(tkz : 
+        *mut lxb_html_tokenizer_t, call_func : lxb_html_tokenizer_token_f,
+        ctx : *mut c_void) -> ();
+    pub fn lxb_html_tokenizer_callback_token_done_ctx_noi(tkz : 
+        *mut lxb_html_tokenizer_t) -> *mut c_void;
+    pub fn lxb_html_tokenizer_state_set_noi(tkz : *mut lxb_html_tokenizer_t,
+        state : lxb_html_tokenizer_state_f) -> ();
+    pub fn lxb_html_tokenizer_tmp_tag_id_set_noi(tkz : 
+        *mut lxb_html_tokenizer_t, tag_id : tag::lxb_tag_id_t) -> ();
+    pub fn lxb_html_tokenizer_tree_noi(tkz : *mut lxb_html_tokenizer_t)
+        -> *mut lxb_html_tree_t;
+    pub fn lxb_html_tokenizer_tree_set_noi(tkz : *mut lxb_html_tokenizer_t,
+        tree : *mut lxb_html_tree_t) -> ();
+    pub fn lxb_html_tokenizer_mraw_noi(tkz : *mut lxb_html_tokenizer_t)
+        -> *mut core::lexbor_mraw_t;
+    pub fn lxb_html_tokenizer_tags_noi(tkz : *mut lxb_html_tokenizer_t)
+        -> *mut core::lexbor_hash_t;
 }
