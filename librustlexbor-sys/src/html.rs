@@ -611,6 +611,21 @@ pub type lxb_html_tokenizer_token_f = extern "C" fn(tkz :
     *mut lxb_html_tokenizer_t, token : *mut lxb_html_token_t, ctx : *mut c_void)
     -> *mut lxb_html_token_t;
 
+pub type lxb_html_tree_insertion_mode_f = extern "C" fn(tree :
+    *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+
+pub type lxb_html_tree_append_attr_f = extern "C" fn(tree :
+    *mut lxb_html_tree_t, attr : *mut dom::lxb_dom_attr_t, ctx : *mut c_void)
+    -> core::lxb_status_t;
+
+#[repr(C)]
+pub struct lxb_html_tree_pending_table_t {
+    pub text_list : *mut core::lexbor_array_obj_t,
+    pub have_non_ws : bool
+}
+
+
+
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/html/encoding.h
