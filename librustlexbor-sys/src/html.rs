@@ -43,7 +43,32 @@ pub type lxb_html_tag_category_t = c_int;
 
 #[repr(C)]
 pub struct lxb_html_tree_t {
+    pub tkz_ref : *mut lxb_html_tokenizer_t,
 
+    pub document : *mut lxb_html_document_t,
+    pub fragment : *mut dom::lxb_dom_node_t,
+
+    pub form : *mut lxb_html_form_element_t,
+
+    pub open_elements : *mut core::lexbor_array_t,
+    pub active_formatting : *mut core::lexbor_array_t,
+    pub template_insertion_modes : *mut core::lexbor_array_obj_t,
+
+    pub pending_table : lxb_html_tree_pending_table_t,
+
+    pub parse_errors : *mut core::lexbor_array_obj_t,
+
+    pub foster_parenting : bool,
+    pub frameset_ok : bool,
+    pub scripting : bool,
+
+    pub mode : lxb_html_tree_insertion_mode_f,
+    pub original_mode : lxb_html_tree_insertion_mode_f,
+    pub before_append_attr : lxb_html_tree_append_attr_f,
+
+    pub status : core::lxb_status_t,
+
+    pub ref_count : c_uint
 }
 
 #[repr(C)]
@@ -78,6 +103,12 @@ pub enum lxb_html_token_attr_type_t {
     LXB_HTML_TOKEN_ATTR_TYPE_UNDEF                                     = 0x0000,
     LXB_HTML_TOKEN_ATTR_TYPE_NAME_NULL                                 = 0x0001,
     LXB_HTML_TOKEN_ATTR_TYPE_VALUE_NULL                                = 0x0002
+}
+
+#[repr(C)]
+pub enum lxb_html_tree_insertion_position_t {
+    LXB_HTML_TREE_INSERTION_POSITION_CHILD                             = 0x00,
+    LXB_HTML_TREE_INSERTION_POSITION_BEFORE                            = 0x01
 }
 
 #[repr(C)]
@@ -624,8 +655,6 @@ pub struct lxb_html_tree_pending_table_t {
     pub have_non_ws : bool
 }
 
-
-
 #[link(name = "lexbor")]
 extern "C" {
     // lexbor/html/encoding.h
@@ -768,4 +797,100 @@ extern "C" {
         -> *mut core::lexbor_mraw_t;
     pub fn lxb_html_tokenizer_tags_noi(tkz : *mut lxb_html_tokenizer_t)
         -> *mut core::lexbor_hash_t;
+
+    // lexbor/html/tree.h
+    pub fn lxb_html_tree_create() -> *mut lxb_html_tree_t;
+    pub fn lxb_html_tree_init(tree : *mut lxb_html_tree_t, tkz :
+        *mut lxb_html_tokenizer_t) -> core::lxb_status_t;
+    pub fn lxb_html_tree_ref(tree : *mut lxb_html_tree_t) 
+        -> *mut lxb_html_tree_t;
+    pub fn lxb_html_tree_unref(tree : *mut lxb_html_tree_t)
+        -> *mut lxb_html_tree_t;
+    pub fn lxb_html_tree_clean(tree : *mut lxb_html_tree_t) -> ();
+    pub fn lxb_html_tree_destroy(tree : *mut lxb_html_tree_t) 
+        -> *mut lxb_html_tree_t;
+    pub fn lxb_html_tree_stop_parsing(tree : *mut lxb_html_tree_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_tree_process_abort(tree : *mut lxb_html_tree_t) -> bool;
+    pub fn lxb_html_tree_parse_error(tree : *mut lxb_html_tree_t, token :
+        *mut lxb_html_token_t, id : lxb_html_tree_error_id_t) -> ();
+    pub fn lxb_html_tree_construction_dispatcher(tree : lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_appropriate_place_inserting_node(tree : 
+        *mut lxb_html_tree_t, override_target : *mut dom::lxb_dom_node_t, ipos :
+        *mut lxb_html_tree_insertion_position_t) -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_insert_foreign_element(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t, _ns : ns::lxb_ns_id_t) 
+        -> *mut lxb_html_element_t;
+    pub fn lxb_html_tree_create_element_for_token(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t, _ns : ns::lxb_ns_id_t, parent :
+        *mut dom::lxb_dom_node_t) -> *mut lxb_html_element_t;
+    pub fn lxb_html_tree_append_attributes(tree : *mut lxb_html_tree_t, 
+        element : *mut dom::lxb_dom_element_t, token : *mut lxb_html_token_t,
+        _ns : ns::lxb_ns_id_t) -> core::lxb_status_t;
+    pub fn lxb_html_tree_append_attributes_from_element(tree : 
+        *mut lxb_html_tree_t, element : *mut dom::lxb_dom_element_t, from :
+        *mut dom::lxb_dom_element_t, _ns : ns::lxb_ns_id_t) 
+        -> core::lxb_status_t;
+    pub fn lxb_html_tree_adjust_mathml_attributes(tree : *mut lxb_html_tree_t,
+        attr : *mut dom::lxb_dom_attr_t, ctx : *mut c_void) 
+        -> core::lxb_status_t;
+    pub fn lxb_html_tree_adjust_svg_attributes(tree : *mut lxb_html_tree_t,
+        attr : *mut dom::lxb_dom_attr_t, ctx : *mut c_void) 
+        -> core::lxb_status_t;
+    pub fn lxb_html_tree_adjust_foreign_attributes(tree : *mut lxb_html_tree_t,
+        attr : *mut dom::lxb_dom_attr_t, ctx : *mut c_void)
+        -> core::lxb_status_t;
+    pub fn lxb_html_tree_insert_character(tree : *mut lxb_html_tree_t, token :
+        *mut lxb_html_token_t, ret_node : *mut *mut dom::lxb_dom_node_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_tree_insert_character_for_data(tree : *mut lxb_html_tree_t,
+        _str : *mut core::lexbor_str_t, ret_node : 
+        *mut *mut dom::lxb_dom_node_t) -> core::lxb_status_t;
+    pub fn lxb_html_tree_insert_comment(tree : *mut lxb_html_tree_t, token :
+        *mut lxb_html_token_t, pos : *mut dom::lxb_dom_node_t) 
+        -> dom::lxb_dom_comment_t;
+    pub fn lxb_html_tree_create_document_type_from_token(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t)
+        -> *mut dom::lxb_dom_document_type_t;
+    pub fn lxb_html_tree_node_delete_deep(tree : *mut lxb_html_tree_t, node :
+        *mut dom::lxb_dom_node_t) -> ();
+    pub fn lxb_html_tree_generic_rawtext_parsing(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> *mut lxb_html_element_t;
+    pub fn lxb_html_tree_generic_rcdata_parsing(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> *mut lxb_html_element_t;
+    pub fn lxb_html_tree_generate_implied_end_tags(tree : *mut lxb_html_tree_t,
+        ex_tag : tag::lxb_tag_id_t, ex_ns : ns::lxb_ns_id_t) -> ();
+    pub fn lxb_html_tree_generate_all_implied_end_tags_thoroughly(tree :
+        *mut lxb_html_tree_t, ex_tag : tag::lxb_tag_id_t, ex_ns : 
+        ns::lxb_ns_id_t) -> ();
+    pub fn lxb_html_tree_reset_insertion_mode_appropriately(tree : 
+        *mut lxb_html_tree_t) -> ();
+    pub fn lxb_html_tree_element_in_scope(tree : *mut lxb_html_tree_t, tag_id :
+        tag::lxb_tag_id_t, _ns : ns::lxb_ns_id_t, ct : lxb_html_tag_category_t)
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_element_in_scope_by_node(tree : *mut lxb_html_tree_t,
+        by_node : *mut dom::lxb_dom_node_t, ct : lxb_html_tag_category_t)
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_element_in_scope_h123456(tree : *mut lxb_html_tree_t)
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_element_in_scope_tbody_thread_tfoot(tree : 
+        *mut lxb_html_tree_t) -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_element_in_scope_td_th(tree : *mut lxb_html_tree_t)
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_check_scope_element(tree : *mut lxb_html_tree_t) 
+        -> bool;
+    pub fn lxb_html_tree_close_p_element(tree : *mut lxb_html_tree_t, token :
+        *mut lxb_html_token_t) -> ();
+    pub fn lxb_html_tree_adoption_agency_algorithm(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t, status : *mut core::lxb_status_t)
+        -> bool;
+    pub fn lxb_html_tree_html_intergation_point(node : *mut dom::lxb_dom_node_t)
+        -> bool;
+    pub fn lxb_html_tree_adjust_attributes_mathml(tree : *mut lxb_html_tree_t,
+        attr : *mut dom::lxb_dom_attr_t, ctx : *mut c_void) 
+        -> core::lxb_status_t;
+    pub fn lxb_html_tree_adjust_attributes_svg(tree : *mut lxb_html_tree_t,
+        attr : *mut dom::lxb_dom_attr_t, ctx : *mut c_void) 
+        -> core::lxb_status_t;
 }
