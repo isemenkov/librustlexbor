@@ -77,6 +77,20 @@ pub enum lxb_html_status_t {
 }
 
 #[repr(C)]
+pub enum lxb_html_document_ready_state_t {
+    LXB_HTML_DOCUMENT_READY_STATE_UNDEF                                = 0x00,
+    LXB_HTML_DOCUMENT_READY_STATE_LOADING                              = 0x01,
+    LXB_HTML_DOCUMENT_READY_STATE_INTERACTIVE                          = 0x02,
+    LXB_HTML_DOCUMENT_READY_STATE_COMPLETE                             = 0x03
+}
+
+#[repr(C)]
+pub enum lxb_html_document_opt {
+    LXB_HTML_DOCUMENT_OPT_UNDEF                                        = 0x00,
+    LXB_HTML_DOCUMENT_PARSE_WO_COPY                                    = 0x01
+}
+
+#[repr(C)]
 pub enum lxb_html_tag_category {
     LXB_HTML_TAG_CATEGORY__UNDEF                                       = 0x0000,
     LXB_HTML_TAG_CATEGORY_ORDINARY                                     = 0x0001,
@@ -125,82 +139,91 @@ pub struct lxb_html_encoding_t {
 
 #[repr(C)]
 pub struct lxb_html_document_t {
+    pub dom_document : dom::lxb_dom_document_t,
 
+    pub iframe_srcdoc : *mut c_void,
+
+    pub head : *mut lxb_html_head_element_t,
+    pub body : *mut lxb_html_body_element_t,
+
+    pub ready_state : lxb_html_document_ready_state_t,
+
+    pub opt : lxb_html_document_opt_t
 }
 
 #[repr(C)]
 pub struct lxb_html_anchor_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_area_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_audio_element_t {
-
+    pub media_element : lxb_html_media_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_br_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_base_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_body_element_t {
-    
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_button_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_canvas_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_d_list_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_data_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_data_list_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_details_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_dialog_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_directory_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
 pub struct lxb_html_div_element_t {
-
+    pub element : lxb_html_element_t
 }
 
 #[repr(C)]
@@ -893,4 +916,187 @@ extern "C" {
     pub fn lxb_html_tree_adjust_attributes_svg(tree : *mut lxb_html_tree_t,
         attr : *mut dom::lxb_dom_attr_t, ctx : *mut c_void) 
         -> core::lxb_status_t;
+    pub fn lxb_html_tree_begin_noi(tree : *mut lxb_html_tree_t, document :
+        *mut lxb_html_document_t) -> core::lxb_status_t;
+    pub fn lxb_html_tree_chunk_noi(tree : *mut lxb_html_tree_t, html :
+        *const core::lxb_char_t, size : c_uint) -> core::lxb_status_t;
+    pub fn lxb_html_tree_end_noi(tree : *mut lxb_html_tree_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_tree_build_noi(tree : *mut lxb_html_tree_t, document :
+        *mut lxb_html_document_t, html : *const core::lxb_char_t, size :
+        c_uint) -> core::lxb_status_t;
+    pub fn lxb_html_tree_create_node_noi(tree : *mut lxb_html_tree_t, tag_id :
+        tag::lxb_tag_id_t, _ns : ns::lxb_ns_id_t) 
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_node_is_noi(node : *mut dom::lxb_dom_node_t, tag_id :
+        tag::lxb_tag_id_t) -> bool;
+    pub fn lxb_html_tree_current_node_noi(tree : *mut lxb_html_tree_t) 
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_adjusted_current_node_noi(tree : *mut lxb_html_tree_t)
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_insert_html_element_noi(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> *mut lxb_html_element_t;
+    pub fn lxb_html_tree_insert_node_noi(to : *mut dom::lxb_dom_node_t, node :
+        *mut dom::lxb_dom_node_t, ipos : 
+        *mut lxb_html_tree_insertion_position_t) -> ();
+    pub fn lxb_html_tree_acknowledge_token_self_closing_noi(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> ();
+    pub fn lxb_html_tree_mathml_text_intergation_point_noi(node :
+        *mut dom::lxb_dom_node_t) -> bool;
+    pub fn lxb_html_tree_scripting_noi(tree : *mut lxb_html_tree_t) -> bool;
+    pub fn lxb_html_tree_scripting_set_noi(tree : *mut lxb_html_tree_t,
+        scripting : bool) -> ();
+    pub fn lxb_html_tree_attach_document_noi(tree : *mut lxb_html_tree_t, doc :
+        *mut lxb_html_document_t) -> ();
+
+    // lexbor/html/interfaces/document.h
+    pub fn lxb_html_document_interface_create(document : 
+        *mut lxb_html_document_t) -> *mut lxb_html_document_t;
+    pub fn lxb_html_document_interface_destroy(document : 
+        *mut lxb_html_document_t) -> *mut lxb_html_document_t;
+    pub fn lxb_html_document_create() -> *mut lxb_html_document_t;
+    pub fn lxb_html_document_clean(document : *mut lxb_html_document_t) -> ();
+    pub fn lxb_html_document_destroy(document : *mut lxb_html_document_t)
+        -> *mut lxb_html_document_t;
+    pub fn lxb_html_document_parse(document : *mut lxb_html_document_t, html :
+        *const core::lxb_char_t, size : c_uint) -> core::lxb_status_t;
+    pub fn lxb_html_document_parse_chunk_begin(document : 
+        *mut lxb_html_document_t) -> core::lxb_status_t;
+    pub fn lxb_html_document_parse_chunk(document : *mut lxb_html_document_t,
+        html : *const core::lxb_char_t, size : c_uint) -> core::lxb_status_t;
+    pub fn lxb_html_document_parse_chunk_end(document : 
+        *mut lxb_html_document_t) -> core::lxb_status_t;
+    pub fn lxb_html_document_parse_fragment(document : *mut lxb_html_document_t,
+        element : *mut dom::lxb_dom_element_t, html : *const core::lxb_char_t,
+        size : c_uint) -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_document_parse_fragment_chunk_begin(document : 
+        *mut lxb_html_document_t, element : *mut dom::lxb_dom_element_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_document_parse_fragment_chunk(document : 
+        *mut lxb_html_document_t, html : *const core::lxb_char_t, size : c_uint)
+        -> core::lxb_status_t;
+    pub fn lxb_html_document_parse_fragment_chunk_end(document :
+        *mut lxb_html_document_t) -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_document_title(document : *mut lxb_html_document_t, len :
+        *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_html_document_title_set(document : *mut lxb_html_document_t,
+        title : *const core::lxb_char_t, len : c_uint) -> core::lxb_status_t;
+    pub fn lxb_html_document_title_raw(document : *mut lxb_html_document_t,
+        len : *mut c_uint) -> *const core::lxb_char_t;
+    pub fn lxb_html_document_head_element_noi(document : 
+        *mut lxb_html_document_t) -> *mut lxb_html_head_element_t;
+    pub fn lxb_html_document_body_element_noi(document : 
+        *mut lxb_html_document_t) -> *mut lxb_html_body_element_t;
+    pub fn lxb_html_document_original_ref_noi(document : 
+        *mut lxb_html_document_t) -> *mut dom::lxb_dom_document_t;
+    pub fn lxb_html_document_is_original_noi(document : 
+        *mut lxb_html_document_t) -> bool;
+    pub fn lxb_html_document_mraw_noi(document : *mut lxb_html_document_t)
+        -> *mut core::lexbor_mraw_t;
+    pub fn lxb_html_document_mraw_text_noi(document : *mut lxb_html_document_t)
+        -> *mut core::lexbor_mraw_t;
+    pub fn lxb_html_document_opt_set_noi(document : *mut lxb_html_document_t,
+        opt : lxb_html_document_opt_t) -> ();
+    pub fn lxb_html_document_opt_noi(document : *mut lxb_html_document_t)
+        -> lxb_html_document_opt_t;
+    pub fn lxb_html_document_create_struct_noi(document : 
+        *mut lxb_html_document_t, struct_size : c_uint) -> *mut c_void;
+    pub fn lxb_html_document_destroy_struct_noi(document : 
+        *mut lxb_html_document_t, data : *mut c_void) -> *mut c_void;
+    pub fn lxb_html_document_create_element_noi(document : 
+        *mut lxb_html_document_t, local_name : *const core::lxb_char_t,
+        lname_len : c_uint, reserved_for_opt : *mut c_void) 
+        -> *mut lxb_html_element_t;
+    pub fn lxb_html_document_destroy_element_noi(element : 
+        *mut dom::lxb_dom_element_t) -> *mut dom::lxb_dom_element_t;
+
+    // lexbor/html/interfaces/anchor_element.h
+    pub fn lxb_html_anchor_element_interface_create(document : 
+        *mut lxb_html_document_t) -> *mut lxb_html_anchor_element_t;
+    pub fn lxb_html_anchor_element_interface_destroy(anchor_element : 
+        *mut lxb_html_anchor_element_t) -> *mut lxb_html_anchor_element_t;
+    
+    // lexbor/html_interfaces/area_element.h
+    pub fn lxb_html_area_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_area_element_t;
+    pub fn lxb_html_area_element_interface_destroy(area_element :
+        *mut lxb_html_area_element_t) -> *mut lxb_html_area_element_t;
+
+    // lexbor/html_interfaces/audio_element.h
+    pub fn lxb_html_audio_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_audio_element_t;
+    pub fn lxb_html_audio_element_interface_destroy(audio_element :
+        *mut lxb_html_audio_element_t) -> *mut lxb_html_audio_element_t;
+    
+    // lexbor/html_interfaces/base_element.h
+    pub fn lxb_html_base_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_base_element_t;
+    pub fn lxb_html_base_element_interface_destroy(base_element :
+        *mut lxb_html_base_element_t) -> *mut lxb_html_base_element_t;
+
+    // lexbor/html_interfaces/body_element.h
+    pub fn lxb_html_body_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_body_element_t;
+    pub fn lxb_html_body_element_interface_destroy(body_element :
+        *mut lxb_html_body_element_t) -> *mut lxb_html_body_element_t;
+    
+    // lexbor/html_interfaces/br_element.h
+    pub fn lxb_html_br_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_br_element_t;
+    pub fn lxb_html_br_element_interface_destroy(br_element :
+        *mut lxb_html_br_element_t) -> *mut lxb_html_br_element_t;
+
+    // lexbor/html_interfaces/button_element.h
+    pub fn lxb_html_button_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_button_element_t;
+    pub fn lxb_html_button_element_interface_destroy(button_element :
+        *mut lxb_html_button_element_t) -> *mut lxb_html_button_element_t;
+
+    // lexbor/html_interfaces/canvas_element.h
+    pub fn lxb_html_canvas_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_canvas_element_t;
+    pub fn lxb_html_canvas_element_interface_destroy(canvas_element :
+        *mut lxb_html_canvas_element_t) -> *mut lxb_html_canvas_element_t;
+
+    // lexbor/html_interfaces/d_list_element.h
+    pub fn lxb_html_d_list_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_d_list_element_t;
+    pub fn lxb_html_d_list_element_interface_destroy(d_list_element :
+        *mut lxb_html_d_list_element_t) -> *mut lxb_html_d_list_element_t;
+
+    // lexbor/html_interfaces/data_element.h
+    pub fn lxb_html_data_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_data_element_t;
+    pub fn lxb_html_data_element_interface_destroy(data_element :
+        *mut lxb_html_data_element_t) -> *mut lxb_html_data_element_t;
+
+    // lexbor/html_interfaces/data_list_element.h
+    pub fn lxb_html_data_list_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_data_list_element_t;
+    pub fn lxb_html_data_list_element_interface_destroy(data_list_element :
+        *mut lxb_html_data_list_element_t) -> *mut lxb_html_data_list_element_t;
+
+    // lexbor/html_interfaces/details_element.h
+    pub fn lxb_html_details_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_details_element_t;
+    pub fn lxb_html_details_element_interface_destroy(details_element :
+        *mut lxb_html_details_element_t) -> *mut lxb_html_details_element_t;
+
+    // lexbor/html_interfaces/dialog_element.h
+    pub fn lxb_html_dialog_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_dialog_element_t;
+    pub fn lxb_html_dialog_element_interface_destroy(dialog_element :
+        *mut lxb_html_dialog_element_t) -> *mut lxb_html_dialog_element_t;
+
+    // lexbor/html_interfaces/directory_element.h
+    pub fn lxb_html_directory_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_directory_element_t;
+    pub fn lxb_html_directory_element_interface_destroy(directory_element :
+        *mut lxb_html_directory_element_t) -> *mut lxb_html_directory_element_t;
+
+    // lexbor/html_interfaces/div_element.h
+    pub fn lxb_html_div_element_interface_create(document :
+        *mut lxb_html_document_t) -> *mut lxb_html_div_element_t;
+    pub fn lxb_html_div_element_interface_destroy(div_element :
+        *mut lxb_html_div_element_t) -> *mut lxb_html_div_element_t;
 }
