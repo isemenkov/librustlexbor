@@ -127,6 +127,187 @@ pub enum lxb_html_tree_insertion_position_t {
 }
 
 #[repr(C)]
+pub enum lxb_html_tokenizer_error_id_t {
+    /* abrupt-closing-of-empty-comment */
+    LXB_HTML_TOKENIZER_ERROR_ABCLOFEMCO                                = 0x0000,
+    /* abrupt-doctype-public-identifier */
+    LXB_HTML_TOKENIZER_ERROR_ABDOPUID                                  = 0x0001,
+    /* abrupt-doctype-system-identifier */
+    LXB_HTML_TOKENIZER_ERROR_ABDOSYID                                  = 0x0002,
+    /* absence-of-digits-in-numeric-character-reference */
+    LXB_HTML_TOKENIZER_ERROR_ABOFDIINNUCHRE                            = 0x0003,
+    /* cdata-in-html-content */
+    LXB_HTML_TOKENIZER_ERROR_CDINHTCO                                  = 0x0004,
+    /* character-reference-outside-unicode-range */
+    LXB_HTML_TOKENIZER_ERROR_CHREOUUNRA                                = 0x0005,
+    /* control-character-in-input-stream */
+    LXB_HTML_TOKENIZER_ERROR_COCHININST                                = 0x0006,
+    /* control-character-reference */
+    LXB_HTML_TOKENIZER_ERROR_COCHRE                                    = 0x0007,
+    /* end-tag-with-attributes */
+    LXB_HTML_TOKENIZER_ERROR_ENTAWIAT                                  = 0x0008,
+    /* duplicate-attribute */
+    LXB_HTML_TOKENIZER_ERROR_DUAT                                      = 0x0009,
+    /* end-tag-with-trailing-solidus */
+    LXB_HTML_TOKENIZER_ERROR_ENTAWITRSO                                = 0x000A,
+    /* eof-before-tag-name */
+    LXB_HTML_TOKENIZER_ERROR_EOBETANA                                  = 0x000B,
+    /* eof-in-cdata */
+    LXB_HTML_TOKENIZER_ERROR_EOINCD                                    = 0x000C,
+    /* eof-in-comment */
+    LXB_HTML_TOKENIZER_ERROR_EOINCO                                    = 0x000D,
+    /* eof-in-doctype */
+    LXB_HTML_TOKENIZER_ERROR_EOINDO                                    = 0x000E,
+    /* eof-in-script-html-comment-like-text */
+    LXB_HTML_TOKENIZER_ERROR_EOINSCHTCOLITE                            = 0x000F,
+    /* eof-in-tag */
+    LXB_HTML_TOKENIZER_ERROR_EOINTA                                    = 0x0010,
+    /* incorrectly-closed-comment */
+    LXB_HTML_TOKENIZER_ERROR_INCLCO                                    = 0x0011,
+    /* incorrectly-opened-comment */
+    LXB_HTML_TOKENIZER_ERROR_INOPCO                                    = 0x0012,
+    /* invalid-character-sequence-after-doctype-name */
+    LXB_HTML_TOKENIZER_ERROR_INCHSEAFDONA                              = 0x0013,
+    /* invalid-first-character-of-tag-name */
+    LXB_HTML_TOKENIZER_ERROR_INFICHOFTANA                              = 0x0014,
+    /* missing-attribute-value */
+    LXB_HTML_TOKENIZER_ERROR_MIATVA                                    = 0x0015,
+    /* missing-doctype-name */
+    LXB_HTML_TOKENIZER_ERROR_MIDONA                                    = 0x0016,
+    /* missing-doctype-public-identifier */
+    LXB_HTML_TOKENIZER_ERROR_MIDOPUID                                  = 0x0017,
+    /* missing-doctype-system-identifier */
+    LXB_HTML_TOKENIZER_ERROR_MIDOSYID                                  = 0x0018,
+    /* missing-end-tag-name */
+    LXB_HTML_TOKENIZER_ERROR_MIENTANA                                  = 0x0019,
+    /* missing-quote-before-doctype-public-identifier */
+    LXB_HTML_TOKENIZER_ERROR_MIQUBEDOPUID                              = 0x001A,
+    /* missing-quote-before-doctype-system-identifier */
+    LXB_HTML_TOKENIZER_ERROR_MIQUBEDOSYID                              = 0x001B,
+    /* missing-semicolon-after-character-reference */
+    LXB_HTML_TOKENIZER_ERROR_MISEAFCHRE                                = 0x001C,
+    /* missing-whitespace-after-doctype-public-keyword */
+    LXB_HTML_TOKENIZER_ERROR_MIWHAFDOPUKE                              = 0x001D,
+    /* missing-whitespace-after-doctype-system-keyword */
+    LXB_HTML_TOKENIZER_ERROR_MIWHAFDOSYKE                              = 0x001E,
+    /* missing-whitespace-before-doctype-name */
+    LXB_HTML_TOKENIZER_ERROR_MIWHBEDONA                                = 0x001F,
+    /* missing-whitespace-between-attributes */
+    LXB_HTML_TOKENIZER_ERROR_MIWHBEAT                                  = 0x0020,
+    /* missing-whitespace-between-doctype-public-and-system-identifiers */
+    LXB_HTML_TOKENIZER_ERROR_MIWHBEDOPUANSYID                          = 0x0021,
+    /* nested-comment */
+    LXB_HTML_TOKENIZER_ERROR_NECO                                      = 0x0022,
+    /* noncharacter-character-reference */
+    LXB_HTML_TOKENIZER_ERROR_NOCHRE                                    = 0x0023,
+    /* noncharacter-in-input-stream */
+    LXB_HTML_TOKENIZER_ERROR_NOININST                                  = 0x0024,
+    /* non-void-html-element-start-tag-with-trailing-solidus */
+    LXB_HTML_TOKENIZER_ERROR_NOVOHTELSTTAWITRSO                        = 0x0025,
+    /* null-character-reference */
+    LXB_HTML_TOKENIZER_ERROR_NUCHRE                                    = 0x0026,
+    /* surrogate-character-reference */
+    LXB_HTML_TOKENIZER_ERROR_SUCHRE                                    = 0x0027,
+    /* surrogate-in-input-stream */
+    LXB_HTML_TOKENIZER_ERROR_SUININST                                  = 0x0028,
+    /* unexpected-character-after-doctype-system-identifier */
+    LXB_HTML_TOKENIZER_ERROR_UNCHAFDOSYID                              = 0x0029,
+    /* unexpected-character-in-attribute-name */
+    LXB_HTML_TOKENIZER_ERROR_UNCHINATNA                                = 0x002A,
+    /* unexpected-character-in-unquoted-attribute-value */
+    LXB_HTML_TOKENIZER_ERROR_UNCHINUNATVA                              = 0x002B,
+    /* unexpected-equals-sign-before-attribute-name */
+    LXB_HTML_TOKENIZER_ERROR_UNEQSIBEATNA                              = 0x002C,
+    /* unexpected-null-character */
+    LXB_HTML_TOKENIZER_ERROR_UNNUCH                                    = 0x002D,
+    /* unexpected-question-mark-instead-of-tag-name */
+    LXB_HTML_TOKENIZER_ERROR_UNQUMAINOFTANA                            = 0x002E,
+    /* unexpected-solidus-in-tag */
+    LXB_HTML_TOKENIZER_ERROR_UNSOINTA                                  = 0x002F,
+    /* unknown-named-character-reference */
+    LXB_HTML_TOKENIZER_ERROR_UNNACHRE                                  = 0x0030,
+    LXB_HTML_TOKENIZER_ERROR_LAST_ENTRY                                = 0x0031,
+}
+
+#[repr(C)]
+pub enum lxb_html_tree_error_id_t {
+    /* unexpected-token */
+    LXB_HTML_RULES_ERROR_UNTO                                          = 0x0000,
+    /* unexpected-closed-token */
+    LXB_HTML_RULES_ERROR_UNCLTO,
+    /* null-character */
+    LXB_HTML_RULES_ERROR_NUCH,
+    /* unexpected-character-token */
+    LXB_HTML_RULES_ERROR_UNCHTO,
+    /* unexpected-token-in-initial-mode */
+    LXB_HTML_RULES_ERROR_UNTOININMO,
+    /* bad-doctype-token-in-initial-mode */
+    LXB_HTML_RULES_ERROR_BADOTOININMO,
+    /* doctype-token-in-before-html-mode */
+    LXB_HTML_RULES_ERROR_DOTOINBEHTMO,
+    /* unexpected-closed-token-in-before-html-mode */
+    LXB_HTML_RULES_ERROR_UNCLTOINBEHTMO,
+    /* doctype-token-in-before-head-mode */
+    LXB_HTML_RULES_ERROR_DOTOINBEHEMO,
+    /* unexpected-closed_token-in-before-head-mode */
+    LXB_HTML_RULES_ERROR_UNCLTOINBEHEMO,
+    /* doctype-token-in-head-mode */
+    LXB_HTML_RULES_ERROR_DOTOINHEMO,
+    /* non-void-html-element-start-tag-with-trailing-solidus */
+    LXB_HTML_RULES_ERROR_NOVOHTELSTTAWITRSO,
+    /* head-token-in-head-mode */
+    LXB_HTML_RULES_ERROR_HETOINHEMO,
+    /* unexpected-closed-token-in-head-mode */
+    LXB_HTML_RULES_ERROR_UNCLTOINHEMO,
+    /* template-closed-token-without-opening-in-head-mode */
+    LXB_HTML_RULES_ERROR_TECLTOWIOPINHEMO,
+    /* template-element-is-not-current-in-head-mode */
+    LXB_HTML_RULES_ERROR_TEELISNOCUINHEMO,
+    /* doctype-token-in-head-noscript-mode */
+    LXB_HTML_RULES_ERROR_DOTOINHENOMO,
+    /* doctype-token-after-head-mode */
+    LXB_HTML_RULES_ERROR_DOTOAFHEMO,
+    /* head-token-after-head-mode */
+    LXB_HTML_RULES_ERROR_HETOAFHEMO,
+    /* doctype-token-in-body-mode */
+    LXB_HTML_RULES_ERROR_DOTOINBOMO,
+    /* bad-ending-open-elements-is-wrong */
+    LXB_HTML_RULES_ERROR_BAENOPELISWR,
+    /* open-elements-is-wrong */
+    LXB_HTML_RULES_ERROR_OPELISWR,
+    /* unexpected-element-in-open-elements-stack */
+    LXB_HTML_RULES_ERROR_UNELINOPELST,
+    /* missing-element-in-open-elements-stack */
+    LXB_HTML_RULES_ERROR_MIELINOPELST,
+    /* no-body-element-in-scope */
+    LXB_HTML_RULES_ERROR_NOBOELINSC,
+    /* missing-element-in-scope */
+    LXB_HTML_RULES_ERROR_MIELINSC,
+    /* unexpected-element-in-scope */
+    LXB_HTML_RULES_ERROR_UNELINSC,
+    /* unexpected-element-in-active-formatting-stack */
+    LXB_HTML_RULES_ERROR_UNELINACFOST,
+    /* unexpected-end-of-file */
+    LXB_HTML_RULES_ERROR_UNENOFFI,
+    /* characters-in-table-text */
+    LXB_HTML_RULES_ERROR_CHINTATE,
+    /* doctype-token-in-table-mode */
+    LXB_HTML_RULES_ERROR_DOTOINTAMO,
+    /* doctype-token-in-select-mode */
+    LXB_HTML_RULES_ERROR_DOTOINSEMO,
+    /* doctype-token-after-body-mode */
+    LXB_HTML_RULES_ERROR_DOTOAFBOMO,
+    /* doctype-token-in-frameset-mode */
+    LXB_HTML_RULES_ERROR_DOTOINFRMO,
+    /* doctype-token-after-frameset-mode */
+    LXB_HTML_RULES_ERROR_DOTOAFFRMO,
+    /* doctype-token-foreign-content-mode */
+    LXB_HTML_RULES_ERROR_DOTOFOCOMO,
+
+    LXB_HTML_RULES_ERROR_LAST_ENTRY
+}
+
+#[repr(C)]
 pub struct lxb_html_encoding_entry_t {
     pub name : *const core::lxb_char_t,
     pub end : *const core::lxb_char_t
@@ -679,6 +860,22 @@ pub type lxb_html_tree_append_attr_f = extern "C" fn(tree :
 pub struct lxb_html_tree_pending_table_t {
     pub text_list : *mut core::lexbor_array_obj_t,
     pub have_non_ws : bool
+}
+
+#[repr(C)]
+pub struct lxb_html_tokenizer_error_t {
+    pub pos : *const core::lxb_char_t,
+    pub id : lxb_html_tokenizer_error_id_t
+}
+
+#[repr(C)]
+pub struct lxb_html_tree_error_t {
+    pub id : lxb_html_tree_error_id_t
+}
+
+#[repr(C)]
+pub struct lxb_html_tree_template_insertion_t {
+    pub mode : lxb_html_tree_insertion_mode_f
 }
 
 #[link(name = "lexbor")]
@@ -1450,4 +1647,164 @@ extern "C" {
         -> *mut lxb_html_window_t;
     pub fn lxb_html_window_destroy(window : *mut lxb_html_window_t)
         -> *mut lxb_html_window_t;
+
+    // lexbor/html/tokenizer/error.h
+    pub fn lxb_html_tokenizer_error_add(parse_errors : 
+        *mut core::lexbor_array_obj_t, pos : *const core::lxb_char_t, id :
+        lxb_html_tokenizer_error_id_t) -> *mut lxb_html_tokenizer_error_t;
+
+    // lexbor/html/tokenizer/state.h
+    pub fn lxb_html_tokenizer_state_data_before(tkz : *mut lxb_html_tokenizer_t,
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+        -> *const core::lxb_char_t;
+    pub fn lxb_html_tokenizer_state_plaintext_before(tkz : 
+        *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end :
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_html_tokenizer_state_before_attribute_name(tkz :
+        *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end :
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_html_tokenizer_state_self_closing_start_tag(tkz :
+        *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end :
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    pub fn lxb_html_tokenizer_state_cr(tkz : *mut lxb_html_tokenizer_t, data :
+        *const core::lxb_char_t, end : *const core::lxb_char_t)
+        -> *const core::lxb_char_t;
+    pub fn lxb_html_tokenizer_state_char_ref(tkz : *mut lxb_html_tokenizer_t,
+        data : *const core::lxb_char_t, end : *const core::lxb_char_t)
+        -> *const core::lxb_char_t;
+
+    // lexbor/html/tokenizer/state_comment.h
+    pub fn lxb_html_tokenizer_state_comment_before_start(tkz :
+        *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end :
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    
+    // lexbor/html/tokenizer/state_doctype.h
+    pub fn lxb_html_tokenizer_state_doctype_before(tkz : 
+        *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end :
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    
+    // lexbor/html/tokenizer/state_rawtext.h
+    pub fn lxb_html_tokenizer_state_rawtext_before(tkz :
+        *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end :
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    
+    // lexbor/html/tokenizer/state_rcdata.h
+    pub fn lxb_html_tokenizer_state_rcdata_before(tkz :
+        *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end :
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+    
+    // lexbor/html/tokenizer/state_script.h
+    pub fn lxb_html_tokenizer_state_script_data_before(tkz :
+        *mut lxb_html_tokenizer_t, data : *const core::lxb_char_t, end :
+        *const core::lxb_char_t) -> *const core::lxb_char_t;
+
+    // lexbor/html/tree/active_formatting.h
+    pub fn lxb_html_tree_active_formatting_maker() -> *mut lxb_html_element_t;
+    pub fn lxb_html_tree_active_formatting_up_to_last_marker(tree :
+        *mut lxb_html_tree_t) -> ();
+    pub fn lxb_html_tree_active_formatting_remove_by_node(tree : 
+        *mut lxb_html_tree_t, node : *mut dom::lxb_dom_node_t) -> ();
+    pub fn lxb_html_tree_active_formatting_find_by_node(tree :
+        *mut lxb_html_tree_t, node : *mut dom::lxb_dom_node_t, return_pos : 
+        *mut c_uint) -> bool;
+    pub fn lxb_html_tree_active_formatting_find_by_node_reverse(tree :
+        *mut lxb_html_tree_t, node : *mut dom::lxb_dom_node_t, return_pos :
+        *mut c_uint) -> bool;
+    pub fn lxb_html_tree_active_formatting_reconstruct_elements(tree :
+        *mut lxb_html_tree_t) -> core::lxb_status_t;
+    pub fn lxb_html_tree_active_formatting_between_last_marker(tree :
+        *mut lxb_html_tree_t, tag_idx : tag::lxb_tag_id_t, return_idx :
+        *mut c_uint) -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_active_formatting_push_with_check_dupl(tree :
+        *mut lxb_html_tree_t, node : *mut dom::lxb_dom_node_t) -> ();
+
+    // lexbor/html/tree/error.h
+    pub fn lxb_html_tree_error_add(parse_errors : *mut core::lexbor_array_obj_t,
+        token : *mut lxb_html_token_t, id : lxb_html_tree_error_id_t)
+        -> *mut lxb_html_tree_error_t;
+    
+    // lexbor/html/tree/insertion_mode.h
+    pub fn lxb_html_tree_insertion_mode_initial(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_before_html(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_before_head(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_head(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_head_noscript(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_after_head(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_body(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_body_skip_new_line(tree :
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_body_skip_new_line_textarea(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_body_text_append(tree : 
+        *mut lxb_html_tree_t, _str : core::lexbor_str_t) -> core::lxb_status_t;
+    pub fn lxb_html_tree_insertion_mode_text(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_table(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_table_anything_else(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_table_text(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_caption(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_column_group(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_table_body(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_row(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_cell(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_select(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_select_in_table(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_template(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_after_body(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_in_frameset(tree : *mut lxb_html_tree_t,
+        token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_after_frameset(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_after_after_body(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_after_after_fremeset(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+    pub fn lxb_html_tree_insertion_mode_foreign_content(tree : 
+        *mut lxb_html_tree_t, token : *mut lxb_html_token_t) -> bool;
+
+    // lexbor/html/tree/open_elements.h
+    pub fn lxb_html_tree_open_elements_remove_by_node(tree : 
+        *mut lxb_html_tree_t, node : *mut dom::lxb_dom_node_t) -> ();
+    pub fn lxb_html_tree_open_elements_pop_until_tag_id(tree :
+        *mut lxb_html_tree_t, tag_id : tag::lxb_tag_id_t, _ns : ns::lxb_ns_id_t,
+        exclude : bool) -> ();
+    pub fn lxb_html_tree_open_elements_pop_until_h123456(tree : 
+        *mut lxb_html_tree_t) -> ();
+    pub fn lxb_html_tree_open_elements_pop_until_td_th(tree :
+        *mut lxb_html_tree_t) -> ();
+    pub fn lxb_html_tree_open_elements_pop_until_node(tree : 
+        *mut lxb_html_tree_t, node : *mut dom::lxb_dom_node_t, exclude : bool)
+        -> ();
+    pub fn lxb_html_tree_open_elements_pop_until(tree : *mut lxb_html_tree_t,
+        idx : c_uint, exclude : bool) -> ();
+    pub fn lxb_html_tree_open_elements_find_by_node(tree : *mut lxb_html_tree_t,
+        node : dom::lxb_dom_node_t, return_node : *mut c_uint) -> bool;
+    pub fn lxb_html_tree_open_elements_find_by_node_reverse(tree :
+        *mut lxb_html_tree_t, node : dom::lxb_dom_node_t, return_pos :
+        *mut c_uint) -> bool;
+    pub fn lxb_html_tree_open_elements_find(tree : *mut lxb_html_tree_t, 
+        tag_id : tag::lxb_tag_id_t, _ns : ns::lxb_ns_id_t, return_index :
+        *mut c_uint) -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_tree_open_elements_find_reverse(tree : *mut lxb_html_tree_t,
+        tag_id : tag::lxb_tag_id_t, _ns : ns::lxb_ns_id_t, return_index :
+        *mut c_uint) -> *mut dom::lxb_dom_node_t;
 }
