@@ -28,7 +28,9 @@
 /*                                                                            */
 /******************************************************************************/
 
-pub mod html;
+use crate::html::{HTMLDocument};
 
-#[cfg(test)]
-mod test;
+#[test]
+fn test_create_html_document() {
+    let doc = HTMLDocument::new();
+}

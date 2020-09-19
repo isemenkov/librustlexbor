@@ -28,7 +28,37 @@
 /*                                                                            */
 /******************************************************************************/
 
-pub mod html;
+use librustlexbor_sys as raw;
 
-#[cfg(test)]
-mod test;
+//use std::ffi::{CStr, CString};
+
+/// HTML document.
+pub struct HTMLDocument {
+    document : *mut raw::html::lxb_html_document_t,
+    //status : raw::core::lxb_status_t
+}
+
+impl HTMLDocument {
+
+    /// Constructor.
+    /// Create new HTMLDocument struct.
+    /// 
+    pub fn new() -> HTMLDocument {
+        HTMLDocument {
+            document : unsafe { raw::html::lxb_html_document_create() },
+            //status : 0
+        }
+    }
+
+
+
+}
+
+/// Destructor.
+/// Clear HTMLDocument and delete all allocated memory.
+/// 
+impl Drop for HTMLDocument {
+    fn drop(&mut self) {
+        unsafe { raw::html::lxb_html_document_destroy(self.document) };
+    }
+}

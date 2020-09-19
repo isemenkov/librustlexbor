@@ -24,13 +24,22 @@ Library is writing used latest stable Rust Compiler (rustc 1.46.0 (04488afe3 202
 
 ### Installation
 
-:exclamation: library bindings is not finished now, but you can try to use it soon.
+Add this to your `Cargo.toml`:
+
+```toml
+[dependencies]
+librustlexbor-sys = "0.1.*"
+```
 
 
 
 ### Usage
 
-:exclamation: library bindings is not finished now, but you can try to use it soon.
+Add to your crate root:
+
+```rust
+extern crate librustlexbor_sys;
+```
 
 
 
