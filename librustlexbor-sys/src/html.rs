@@ -41,6 +41,7 @@ use std::os::raw::c_void;
 
 pub type lxb_html_tag_category_t = c_int;
 pub type lxb_html_document_opt_t = c_uint;
+pub type lxb_html_tokenizer_opt_t = c_uint;
 
 #[repr(C)]
 pub struct lxb_html_tree_t {
