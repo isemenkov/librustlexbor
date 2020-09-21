@@ -309,6 +309,30 @@ pub enum lxb_html_tree_error_id_t {
 }
 
 #[repr(C)]
+pub enum lxb_html_parser_state_t {
+    LXB_HTML_PARSER_STATE_BEGIN                                        = 0x00,
+    LXB_HTML_PARSER_STATE_PROCESS                                      = 0x01,
+    LXB_HTML_PARSER_STATE_END                                          = 0x02,
+    LXB_HTML_PARSER_STATE_FRAGMENT_PROCESS                             = 0x03,
+    LXB_HTML_PARSER_STATE_ERROR                                        = 0x04
+}
+
+#[repr(C)]
+pub struct lxb_html_parser_t {
+    pub tkz : *mut lxb_html_tokenizer_t,
+    pub tree : *mut lxb_html_tree_t,
+    pub original_tree : *mut lxb_html_tree_t,
+
+    pub root : *mut dom::lxb_dom_node_t,
+    pub form : *mut dom::lxb_dom_node_t,
+
+    pub state : lxb_html_parser_state_t,
+    pub status : core::lxb_status_t,
+
+    pub ref_count : c_uint
+}
+
+#[repr(C)]
 pub struct lxb_html_encoding_entry_t {
     pub name : *const core::lxb_char_t,
     pub end : *const core::lxb_char_t
@@ -1808,4 +1832,47 @@ extern "C" {
     pub fn lxb_html_tree_open_elements_find_reverse(tree : *mut lxb_html_tree_t,
         tag_id : tag::lxb_tag_id_t, _ns : ns::lxb_ns_id_t, return_index :
         *mut c_uint) -> *mut dom::lxb_dom_node_t;
+
+    // lexbor/html/parser.h
+    pub fn lxb_html_parser_create() -> *mut lxb_html_parser_t;
+    pub fn lxb_html_parser_init(parser : *mut lxb_html_parser_t) 
+        -> core::lxb_status_t;
+    pub fn lxb_html_parser_clean(parser : *mut lxb_html_parser_t) -> ();
+    pub fn lxb_html_parser_destroy(parser : *mut lxb_html_parser_t)
+        -> *mut lxb_html_parser_t;
+    pub fn lxb_html_parser_ref(parser : *mut lxb_html_parser_t)
+        -> *mut lxb_html_parser_t;
+    pub fn lxb_html_parser_unref(parser : *mut lxb_html_parser_t)
+        -> *mut lxb_html_parser_t;
+    pub fn lxb_html_parse(parser : *mut lxb_html_parser_t, html : 
+        *const core::lxb_char_t, size : c_uint) -> *mut lxb_html_document_t;
+    pub fn lxb_html_parse_fragment(parser : *mut lxb_html_parser_t, element :
+        *mut lxb_html_element_t, html : *const core::lxb_char_t, size : c_uint)
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_parse_fragment_by_tag_id(parser : *mut lxb_html_parser_t,
+        document : *mut lxb_html_document_t, tag_id : tag::lxb_tag_id_t, _ns :
+        ns::lxb_ns_id_t, html : *const core::lxb_char_t, size : c_uint)
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_parse_chunk_begin(parser : *mut lxb_html_parser_t)
+        -> *mut lxb_html_document_t;
+    pub fn lxb_html_parse_chunk_process(parser : *mut lxb_html_parser_t,
+        html : *const core::lxb_char_t, size : c_uint) -> core::lxb_status_t;
+    pub fn lxb_html_parse_chunk_end(parser : *mut lxb_html_parser_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_parse_fragment_chunk_begin(parser : *mut lxb_html_parser_t,
+        document : *mut lxb_html_document_t, tag_id : tag::lxb_tag_id_t, _ns :
+        ns::lxb_ns_id_t) -> core::lxb_status_t;
+    pub fn lxb_html_parse_fragment_chunk_process(parser : 
+        *mut lxb_html_parser_t, html : *const core::lxb_char_t, size : c_uint)
+        -> core::lxb_status_t;
+    pub fn lxb_html_parse_fragment_chunk_end(parser : *mut lxb_html_parser_t)
+        -> *mut dom::lxb_dom_node_t;
+    pub fn lxb_html_parser_tokenizer_noi(parser : *mut lxb_html_parser_t)
+        -> *mut lxb_html_tokenizer_t;
+    pub fn lxb_html_parser_tree_noi(parser : *mut lxb_html_parser_t)
+        -> *mut lxb_html_tree_t;
+    pub fn lxb_html_parser_status_noi(parser : *lxb_html_parser_t)
+        -> core::lxb_status_t;
+    pub fn lxb_html_parser_state_noi(parser : *mut lxb_html_parser_t)
+        -> core::lxb_status_t;
 }
