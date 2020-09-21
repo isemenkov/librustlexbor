@@ -1871,7 +1871,7 @@ extern "C" {
         -> *mut lxb_html_tokenizer_t;
     pub fn lxb_html_parser_tree_noi(parser : *mut lxb_html_parser_t)
         -> *mut lxb_html_tree_t;
-    pub fn lxb_html_parser_status_noi(parser : *lxb_html_parser_t)
+    pub fn lxb_html_parser_status_noi(parser : *mut lxb_html_parser_t)
         -> core::lxb_status_t;
     pub fn lxb_html_parser_state_noi(parser : *mut lxb_html_parser_t)
         -> core::lxb_status_t;

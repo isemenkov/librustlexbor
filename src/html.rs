@@ -29,14 +29,38 @@
 /******************************************************************************/
 
 use librustlexbor_sys as raw;
-
-//use std::ffi::{CStr, CString};
+use std::{mem::MaybeUninit};
+use std::ffi::{CStr, CString};
 
 /// HTML document.
 pub struct HTMLDocument {
     document : *mut raw::html::lxb_html_document_t,
-    //status : raw::core::lxb_status_t
+    parser : *mut raw::html::lxb_html_parser_t,
+    status : raw::core::lxb_status_t
 }
+
+/// HTML tag node element.
+pub struct HTMLTagNode {
+
+}
+
+/// Start parse document from.
+/// 
+pub enum DocumentParseFrom {
+    /// Start parse document from root.
+    Root,   
+
+    /// Start parse document from HTML tag.
+    Html,   
+
+    /// Start parse document from HEAD tag.
+    Head,   
+    
+    /// Start parse document from BODY tag.
+    Body,   
+}
+
+
 
 impl HTMLDocument {
 
@@ -44,21 +68,38 @@ impl HTMLDocument {
     /// Create new HTMLDocument struct.
     /// 
     pub fn new() -> HTMLDocument {
+        let parser = unsafe { raw::html::lxb_html_parser_create() };
+        
         HTMLDocument {
-            document : unsafe { raw::html::lxb_html_document_create() },
-            //status : 0
+            document : MaybeUninit::<raw::html::lxb_html_document_t>::uninit()
+                .as_mut_ptr(),
+            status : unsafe { raw::html::lxb_html_parser_init(parser) },
+            parser : parser,
         }
     }
 
+    /// Parse HTML document.
+    /// 
+    pub fn parse<S>(&mut self, html : S) -> HTMLTagNode
+        where S: Into<String> {
+    
+            
+        HTMLTagNode {
 
+        }
+    }
 
 }
-
-/// Destructor.
-/// Clear HTMLDocument and delete all allocated memory.
-/// 
+ 
 impl Drop for HTMLDocument {
+    
+    /// Destructor.
+    /// Clear HTMLDocument and delete all allocated memory.
+    ///
     fn drop(&mut self) {
-        unsafe { raw::html::lxb_html_document_destroy(self.document) };
+        unsafe { 
+            raw::html::lxb_html_parser_destroy(self.parser);
+            raw::html::lxb_html_document_destroy(self.document) 
+        }; 
     }
 }

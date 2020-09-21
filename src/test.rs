@@ -32,5 +32,5 @@ use crate::html::{HTMLDocument};
 
 #[test]
 fn test_create_html_document() {
-    let doc = HTMLDocument::new();
-}
+    let _ = HTMLDocument::new();
+} 
