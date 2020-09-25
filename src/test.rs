@@ -28,9 +28,46 @@
 /*                                                                            */
 /******************************************************************************/
 
-use crate::html::{HTMLDocument};
+use crate::html::{Document};
 
 #[test]
-fn test_create_html_document() {
-    let _ = HTMLDocument::new();
-} 
+fn test_parse_html_document() {
+    let mut doc = Document::new();
+    let result = doc.parse("<html><head><title>Title</title></head></html>");
+
+    assert_eq!(result.is_ok(), true);
+}
+
+#[test]
+fn test_parse_html_chunk() {
+    let html : [&str; 16] = [
+        "<!DOCT",
+        "YPE htm",
+        "l>",
+        "<html><head>",
+        "<ti",
+        "tle>HTML chun",
+        "ks parsing</",
+        "title>",
+        "</head><bod",
+        "y><div cla",
+        "ss=",
+        "\"bestof",
+        "class",
+        "\">",
+        "good for me",
+        "</div>"
+    ];
+
+    let mut doc = Document::new();
+    let mut result = doc.parse_chunk_start();
+    assert_eq!(result.is_ok(), true);
+
+    for s in html.iter() {
+        result = doc.parse_chunk(s);
+        assert_eq!(result.is_ok(), true);
+    }
+    
+    result = doc.parse_chunk_end();
+    assert_eq!(result.is_ok(), true);
+}

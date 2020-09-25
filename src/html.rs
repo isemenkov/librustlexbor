@@ -30,76 +30,133 @@
 
 use librustlexbor_sys as raw;
 use std::{mem::MaybeUninit};
-use std::ffi::{CStr, CString};
+use std::ffi::{CString};
 
 /// HTML document.
-pub struct HTMLDocument {
+pub struct Document {
     document : *mut raw::html::lxb_html_document_t,
-    parser : *mut raw::html::lxb_html_parser_t,
-    status : raw::core::lxb_status_t
+    parser   : *mut raw::html::lxb_html_parser_t
 }
 
-/// HTML tag node element.
-pub struct HTMLTagNode {
-
+#[derive(Debug, PartialEq)]
+pub enum Errors {
+    ParseError(String)
 }
 
-/// Start parse document from.
-/// 
-pub enum DocumentParseFrom {
-    /// Start parse document from root.
-    Root,   
+///
+type Result<T> = std::result::Result<T, Errors>;
 
-    /// Start parse document from HTML tag.
-    Html,   
-
-    /// Start parse document from HEAD tag.
-    Head,   
-    
-    /// Start parse document from BODY tag.
-    Body,   
-}
-
-
-
-impl HTMLDocument {
+impl Document {
 
     /// Constructor.
     /// Create new HTMLDocument struct.
     /// 
-    pub fn new() -> HTMLDocument {
-        let parser = unsafe { raw::html::lxb_html_parser_create() };
-        
-        HTMLDocument {
+    pub fn new() -> Document {
+        Document {
             document : MaybeUninit::<raw::html::lxb_html_document_t>::uninit()
                 .as_mut_ptr(),
-            status : unsafe { raw::html::lxb_html_parser_init(parser) },
-            parser : parser,
+            parser : MaybeUninit::<raw::html::lxb_html_parser_t>::uninit()
+                .as_mut_ptr()
         }
     }
 
-    /// Parse HTML document.
+    /// Parse html document.
     /// 
-    pub fn parse<S>(&mut self, html : S) -> HTMLTagNode
-        where S: Into<String> {
-    
-            
-        HTMLTagNode {
+    pub fn parse(&mut self, html : &str) -> Result<()> {
+        
+        // Create new document parser.
+        self.parser = unsafe { raw::html::lxb_html_parser_create() };
+        let status = unsafe { raw::html::lxb_html_parser_init(self.parser) };
 
+        if status != (raw::core::lexbor_status_t::LXB_STATUS_OK as u32) {
+            return Err(Errors::ParseError("Parser initialization error."
+                .to_string()));
         }
+
+        // Get html document text data.
+        let doc_html = CString::new(html).unwrap();
+        let doc_size = doc_html.as_bytes_with_nul().len();
+
+        // Try to parse document.
+        self.document = unsafe { raw::html::lxb_html_parse(self.parser, 
+            doc_html.as_ptr() as *const u8, doc_size as u32) };
+        
+        if self.document.is_null() {
+            return Err(Errors::ParseError("Document parse error.".to_string()));
+        }
+        
+        // Destroy document parser.
+        unsafe { raw::html::lxb_html_parser_destroy(self.parser) };
+        return Ok(());
     }
 
+    /// Inialize document to parse chunk.
+    /// 
+    pub fn parse_chunk_start(&mut self) -> Result<()> {
+
+        // Create new document parser.
+        self.parser = unsafe { raw::html::lxb_html_parser_create() };
+        let status = unsafe { raw::html::lxb_html_parser_init(self.parser) };
+
+        if status != (raw::core::lexbor_status_t::LXB_STATUS_OK as u32) {
+            return Err(Errors::ParseError("Parser initialization error."
+                .to_string()));
+        }
+
+        // Initialize parser.
+        self.document = unsafe { raw::html::lxb_html_parse_chunk_begin(
+            self.parser) };
+        
+        if self.document.is_null() {
+            return Err(Errors::ParseError("Document parse error.".to_string()));
+        }
+
+        return Ok(());
+    }
+
+    /// Parse document chunk.
+    /// 
+    pub fn parse_chunk(&mut self, html : &str) -> Result<()> {
+
+        // Get html document text data.
+        let doc_html = CString::new(html).unwrap();
+        let doc_size = doc_html.as_bytes_with_nul().len();
+
+        let status = unsafe { raw::html::lxb_html_parse_chunk_process(
+            self.parser, doc_html.as_ptr() as *const u8, doc_size as u32) };
+
+        if status != (raw::core::lexbor_status_t::LXB_STATUS_OK as u32) {
+            return Err(Errors::ParseError("Chunk parse error.".to_string()));
+        }
+
+        return Ok(());
+    }
+
+    /// Finalize parse docuemnt chunks.
+    /// 
+    pub fn parse_chunk_end(&mut self) -> Result<()> {
+
+        let status = unsafe { raw::html::lxb_html_parse_chunk_end(
+            self.parser) };
+        
+        if status != (raw::core::lexbor_status_t::LXB_STATUS_OK as u32) {
+            return Err(Errors::ParseError("Document parse error."
+                .to_string()));
+        }
+
+        unsafe { raw::html::lxb_html_parser_destroy(self.parser) };
+        return Ok(());
+    }
 }
  
-impl Drop for HTMLDocument {
+impl Drop for Document {
     
     /// Destructor.
-    /// Clear HTMLDocument and delete all allocated memory.
+    /// Clear Document and free all allocated memory.
     ///
     fn drop(&mut self) {
-        unsafe { 
-            raw::html::lxb_html_parser_destroy(self.parser);
-            raw::html::lxb_html_document_destroy(self.document) 
-        }; 
+        if !self.document.is_null() {
+            unsafe { raw::html::lxb_html_document_destroy(self.document) };
+        }
     }
 }
